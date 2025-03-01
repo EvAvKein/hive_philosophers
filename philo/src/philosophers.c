@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 11:37:34 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/01 21:46:57 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/01 23:30:07 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static bool	prepare_feast(t_feast *feast, t_philo_args data)
 			free(feast->forks);
 		if (feast->threads)
 			free(feast->threads);
-		write(2, "Feast off: A feast malloc failed :(\n", 37);
+		write(STDERR_FILENO, "Feast off: A feast malloc failed :(\n", 37);
 		return (false);
 	}
 	memset(feast->threads, '\0',

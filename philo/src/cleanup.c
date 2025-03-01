@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 14:12:53 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/01 21:37:12 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/01 23:29:58 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ bool end_feast(t_feast *feast, char *announcement)
 {
 	feast->status = CANCELLED;
 	if (announcement)
-		write(2, announcement, ft_strlen(announcement));
+		write(STDERR_FILENO, announcement, ft_strlen(announcement));
 	if (feast->threads)
 	{
 		wait_for_philos(feast);

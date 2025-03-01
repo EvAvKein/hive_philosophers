@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 13:05:38 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/01 21:56:37 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/01 23:30:39 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	*philo_routine(void *arg)
 	philo = (t_philo *)arg;
 	feast = philo->feast;
 	// c = '0' + philo->id;
-	// write(1, &c, 1);
+	// write(STDOUT_FILENO, &c, 1);
 	while (1)
 	{
 		if (feast->status == COOKING)

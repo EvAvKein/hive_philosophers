@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 14:12:53 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/01 19:11:53 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/01 21:37:12 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,10 @@ void	wait_for_philos(t_feast *feast)
 	}
 }
 
-static void	destroy_all_forks(pthread_mutex_t *forks, int fork_count)
+static void	destroy_all_forks(t_fork *forks, int fork_count)
 {
 	while (fork_count--)
-		pthread_mutex_destroy(&forks[fork_count]);
+		pthread_mutex_destroy(&forks[fork_count].mutex);
 }
 
 static void	free_all_philos(t_philo *philos)

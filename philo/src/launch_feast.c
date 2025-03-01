@@ -25,6 +25,10 @@ static t_philo	*welcome_philo(t_philo_init_data data)
 	*philo = (t_philo){
 		.feast = data.feast, .next = NULL,
 		.id = data.id, .status = ABSENT,
+		.forks = {
+			&data.feast->forks[data.id - 1],
+			&data.feast->forks[data.id % data.args.num_of_philos]
+		},
 		.time_to_die = data.args.time_to_die,
 		.time_to_eat = data.args.time_to_eat,
 		.time_to_sleep = data.args.time_to_sleep,
@@ -81,11 +85,14 @@ static bool thread_all_philos(t_feast *feast)
 
 static bool place_forks(t_feast *feast)
 {
-	int				i;
+	int	i;
 
 	i = 0;
 	while (i < feast->num_of_philos)
-		pthread_mutex_init(&feast->forks[i++], NULL);
+	{
+		feast->forks[i].available = true;
+		pthread_mutex_init(&feast->forks[i++].mutex, NULL);
+	}
 	return (true);
 }
 

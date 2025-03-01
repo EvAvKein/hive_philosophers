@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 09:18:19 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/01 18:53:37 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/01 21:13:02 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ typedef struct	s_feast
 {
 	int				status;
 	int				num_of_philos;
-	pthread_mutex_t	*forks;
+	struct s_fork	*forks;
 	pthread_t		*threads;
 	struct s_philo	*philos;
 }					t_feast;
@@ -47,6 +47,12 @@ typedef struct	s_philo_init_data
 	t_feast			*feast;
 	int				id;
 }					t_philo_init_data;
+
+typedef struct		s_fork
+{
+	pthread_mutex_t	mutex;
+	bool			available;
+}					t_fork;
 
 # define ABSENT		0
 # define DEAD		1
@@ -59,6 +65,7 @@ typedef struct	s_philo
 {
 	t_feast				*feast;
 	struct s_philo		*next;
+	t_fork				*forks[2];
 	int					id;
 	int					status;
 	int					time_to_die;

@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 11:37:34 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/01 19:15:25 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/01 21:46:57 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static bool	prepare_feast(t_feast *feast, t_philo_args data)
 {
 	*feast = (t_feast){.status = COOKING, .philos = NULL,
 		.num_of_philos = data.num_of_philos,
-		.forks = malloc(sizeof(pthread_mutex_t) * (data.num_of_philos + 1)),
+		.forks = malloc(sizeof(t_fork) * (data.num_of_philos + 1)),
 		.threads = malloc(sizeof(pthread_t) * (data.num_of_philos + 1))};
 	if (!feast->forks || !feast->threads)
 	{
@@ -30,7 +30,7 @@ static bool	prepare_feast(t_feast *feast, t_philo_args data)
 	memset(feast->threads, '\0',
 		sizeof(pthread_t) * (data.num_of_philos + 1));
 	memset(feast->forks, '\0',
-		sizeof(pthread_mutex_t) * (data.num_of_philos + 1));
+		sizeof(t_fork) * (data.num_of_philos + 1));
 	feast->num_of_philos = data.num_of_philos;
 	return (true);
 }

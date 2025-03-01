@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 09:15:43 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/02/27 11:14:30 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/01 23:13:16 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,8 +68,9 @@ int main(int argc, char **argv)
 	if (argc < 5 || argc > 6)
 	{
 		write(STDERR_FILENO, "./philo program arguments:\n\
-number_of_philosophers time_to_die time_to_eat time_to_sleep\
-[number_of_times_each_philosopher_must_eat]\n", 132);
+ - number_of_philosophers\n - time_to_die\n\
+ - time_to_eat\n - time_to_sleep\n\
+ - number_of_times_each_philosopher_must_eat \033[37m(optional)\033[0m\n", 166);
 		return (EXIT_FAILURE);
 	}		
 	if (!parse_philo_args(&data, argc, argv))

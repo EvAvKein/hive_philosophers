@@ -6,60 +6,43 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 11:37:34 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/02/27 12:59:11 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/01 19:15:25 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static void	*philo_routine(void *arg)
+static bool	prepare_feast(t_feast *feast, t_philo_args data)
 {
-	t_philo *philo;
-	t_feast *feast;
-
-	philo = arg;
-	feast = philo->feast;
-	while (1)
+	*feast = (t_feast){.status = COOKING, .philos = NULL,
+		.num_of_philos = data.num_of_philos,
+		.forks = malloc(sizeof(pthread_mutex_t) * (data.num_of_philos + 1)),
+		.threads = malloc(sizeof(pthread_t) * (data.num_of_philos + 1))};
+	if (!feast->forks || !feast->threads)
 	{
-		if (feast->status == COOKING)
-			continue ;
-		if (feast->status == CANCELLED)
-			// pthread_detach();
-		if (feast->status == SERVED)
-			break ;
+		if (feast->forks)
+			free(feast->forks);
+		if (feast->threads)
+			free(feast->threads);
+		write(2, "Feast off: A feast malloc failed :(\n", 37);
+		return (false);
 	}
-	write(1, philo.id, 1);
-	// pthread_detach();
-}
-
-
-
-static	bool init_feast(t_feast *feast, t_philo_args data)
-{
-	t_philo		*philo;
-	pthread_t	thread;
-	int			*arg;
-	int			philo_i;
-
-	philo_i = 0;
-	while (philo_i < data.num_of_philos)
-	{
-		philo = malloc(sizeof(t_philo));
-		if (!philo)
-			return (destroy_philos());
-		if (!pthread_create(&thread, NULL, philo_routine, arg))
-			return (destroy_philos());
-		philo->thread = thread;
-		
-	}
-	
+	memset(feast->threads, '\0',
+		sizeof(pthread_t) * (data.num_of_philos + 1));
+	memset(feast->forks, '\0',
+		sizeof(pthread_mutex_t) * (data.num_of_philos + 1));
+	feast->num_of_philos = data.num_of_philos;
+	return (true);
 }
 
 int	philosophers(t_philo_args data)
 {
 	t_feast feast;
 
-	if (!init_feast(&feast, data))
+	if (!prepare_feast(&feast, data))
 		return (EXIT_FAILURE);
+	if (!launch_feast(&feast, data))
+		return (EXIT_FAILURE);
+	end_feast(&feast, NULL);
 	return (EXIT_SUCCESS);	
 }

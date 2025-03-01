@@ -6,7 +6,7 @@
 #    By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/02/26 19:12:41 by ekeinan           #+#    #+#              #
-#    Updated: 2025/02/26 19:20:42 by ekeinan          ###   ########.fr        #
+#    Updated: 2025/03/01 19:14:26 by ekeinan          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,11 @@ NAME := philo
 
 SRC_DIR := src
 SRC_FILES := main.c \
-			 philosophers.c 
+			 philosophers.c \
+			 launch_feast.c \
+			 routine.c \
+			 utils.c \
+			 cleanup.c
 
 INCLUDE_DIR := include
 INCLUDE_FILES := philo.h
@@ -36,7 +40,7 @@ clean:
 	@rm -f $(OBJ) $(OBJ)
 
 fclean: clean
-	rm -f $(NAME)
+	@rm -f $(NAME)
 
 re: fclean all
 

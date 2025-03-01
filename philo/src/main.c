@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 09:15:43 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/01 23:13:16 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/01 23:28:36 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ int main(int argc, char **argv)
 	}
 	if (!data.num_of_philos)
 	{
-		write(STDERR_FILENO, "No philosophers? :(\n", 34);
+		write(STDERR_FILENO, "No philosophers? :(\n", 21);
 		return (EXIT_FAILURE);
 	}
 	return (philosophers(data));

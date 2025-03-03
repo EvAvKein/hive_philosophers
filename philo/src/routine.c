@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 13:05:38 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/03 16:21:12 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/03 19:26:02 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,20 +56,33 @@ static bool	wait_for_serving(t_feast *feast)
 	}
 }
 
+static void	*die_alone(t_feast *feast, t_philo *philo)
+{
+	philo_log(philo, "is thinking");
+	pthread_mutex_lock(philo->forks[0]);
+	philo_log(philo, "has taken a fork");
+	while (!starved_to_death(feast, philo))
+		;
+	pthread_mutex_unlock(philo->forks[0]);
+	return (NULL);
+}
+
 void	*philo_routine(void *arg)
 {
 	t_feast			*feast;
 	t_philo			*philo;
-	
+
 	philo = (t_philo *)arg;
 	feast = philo->feast;
 	if (!wait_for_serving(feast))
 		return (NULL);
 	philo->last_satiated = feast->serve_time;
+	if (philo->forks[0] == philo->forks[1])
+		return (die_alone(feast, philo));
 	while (feast->status != CANCELLED)
 	{
 		if (feast->must_eat >= 0 && philo->ate == feast->must_eat)
-			return (NULL); 
+			return (NULL);
 		philo_log(philo, "is thinking");
 		if (!eat(feast, philo, philo->forks[0], philo->forks[1]))
 			return (NULL);

@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 09:15:43 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/03 17:06:08 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/03 18:33:36 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,8 +64,7 @@ static bool parse_philo_args(t_philo_args *data, int argc, char **argv)
 static bool	prepare_feast(t_feast *feast, t_philo_args data)
 {
 	*feast = (t_feast){
-		.status = COOKING, .philos = NULL,
-		.num_of_philos = data.num_of_philos,
+		.status = COOKING, .philos = NULL, .num_of_philos = data.num_of_philos,
 		.forks = malloc(sizeof(pthread_mutex_t) * (data.num_of_philos + 1)),
 		.threads = malloc(sizeof(pthread_t) * (data.num_of_philos + 1)),
 		.time_to_die = data.time_to_die,
@@ -82,6 +81,7 @@ static bool	prepare_feast(t_feast *feast, t_philo_args data)
 		write(STDERR_FILENO, "Feast off: A feast malloc failed :(\n", 37);
 		return (false);
 	}
+	pthread_mutex_init(&feast->stenographer, NULL);
 	memset(feast->threads, '\0',
 		sizeof(pthread_t) * (data.num_of_philos + 1));
 	memset(feast->forks, '\0',
@@ -99,6 +99,8 @@ static int	philosophers(t_philo_args data)
 	if (!launch_feast(&feast, data))
 		return (EXIT_FAILURE);
 	wait_for_philos(&feast);
+	free(feast.threads);
+	feast.threads = NULL;
 	end_feast(&feast, NULL);
 	return (EXIT_SUCCESS);	
 }

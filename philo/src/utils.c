@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 13:47:39 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/03 16:21:50 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/03 18:14:37 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,19 +22,28 @@ size_t	ft_strlen(char *str)
 	return (i);
 }
 
-int		ms_since(struct timeval time)
+long	ms_since(struct timeval time)
 {
 	struct	timeval		current;
-
 	gettimeofday(&current, NULL);
-	return ((current.tv_usec - time.tv_usec) / 1000);
+	return (((current.tv_sec * 1000) + (current.tv_usec / 1000))
+		- ((time.tv_sec * 1000) + (time.tv_usec / 1000)));
 }
 
 void	*philo_log(t_philo *philo, char *action)
 {
 	if (philo->dead || philo->feast->status == SERVED)
-		printf("%i %i %s\n",
+	{
+		pthread_mutex_lock(&philo->feast->stenographer);
+		if (philo->feast->status == CANCELLED)
+		{
+			pthread_mutex_unlock(&philo->feast->stenographer);
+			return (NULL);
+		}
+		printf("[%li] %i %s\n",
 			ms_since(philo->feast->serve_time), philo->id, action);
+		pthread_mutex_unlock(&philo->feast->stenographer);
+	}
 	return (NULL);
 }
 

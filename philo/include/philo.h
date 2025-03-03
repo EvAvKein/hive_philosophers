@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 09:18:19 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/03 15:57:07 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/03 18:02:38 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ typedef struct	s_feast
 {
 	int				status;
 	int				num_of_philos;
+	pthread_mutex_t	stenographer;
 	pthread_mutex_t	*forks;
 	pthread_t		*threads;
 	struct s_philo	*philos;
@@ -71,7 +72,7 @@ void	wait_for_philos(t_feast *feast);
 bool	end_feast(t_feast *feast, char *announcement);
 
 size_t	ft_strlen(char *str);
-int		ms_since(struct timeval time);
+long	ms_since(struct timeval time);
 void	*philo_log(t_philo *philo, char *action);
 bool	starved_to_death(t_feast *feast, t_philo *philo);
 bool	usleep_until_death(t_feast *feast, t_philo *philo, int ms_time);

@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 09:15:43 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/03 16:12:15 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/03 17:06:08 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,7 @@ static int	philosophers(t_philo_args data)
 		return (EXIT_FAILURE);
 	if (!launch_feast(&feast, data))
 		return (EXIT_FAILURE);
+	wait_for_philos(&feast);
 	end_feast(&feast, NULL);
 	return (EXIT_SUCCESS);	
 }

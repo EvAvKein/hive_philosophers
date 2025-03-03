@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 13:47:39 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/03 18:14:37 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/03 19:44:55 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,11 +59,14 @@ bool	starved_to_death(t_feast *feast, t_philo *philo)
 	return (false);
 }
 
-bool	usleep_until_death(t_feast *feast, t_philo *philo, int ms_time)
-{
+bool	usleep_until_death(t_feast *feast, t_philo *philo,
+	int ms_time, bool eating)
+{	
 	while (ms_time)
 	{
-		if (feast->status == CANCELLED || starved_to_death(feast, philo))
+		if (feast->status == CANCELLED)
+			return (true);
+		if (!eating && starved_to_death(feast, philo))
 			return (true);
 		usleep(1000);
 		ms_time--;

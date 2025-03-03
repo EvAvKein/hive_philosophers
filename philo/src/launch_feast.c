@@ -24,15 +24,12 @@ static t_philo	*welcome_philo(t_philo_init_data data)
 	}
 	*philo = (t_philo){
 		.feast = data.feast, .next = NULL,
-		.id = data.id, .status = ABSENT,
+		.id = data.id, .dead = false,
 		.forks = {
 			&data.feast->forks[data.id - 1],
 			&data.feast->forks[data.id % data.args.num_of_philos]
 		},
-		.time_to_die = data.args.time_to_die,
-		.time_to_eat = data.args.time_to_eat,
-		.time_to_sleep = data.args.time_to_sleep,
-		.must_eat = data.args.must_eat, .ate = 0,
+		.ate = 0, .last_satiated = {}
 	};
 	return (philo);
 }
@@ -89,10 +86,7 @@ static bool place_forks(t_feast *feast)
 
 	i = 0;
 	while (i < feast->num_of_philos)
-	{
-		feast->forks[i].available = true;
-		pthread_mutex_init(&feast->forks[i++].mutex, NULL);
-	}
+		pthread_mutex_init(&feast->forks[i++], NULL);
 	return (true);
 }
 
@@ -103,6 +97,7 @@ bool launch_feast(t_feast *feast, t_philo_args data)
 	if (!thread_all_philos(feast))
 		return (false);
 	place_forks(feast);
+	gettimeofday(&feast->serve_time, NULL);
 	feast->status = SERVED;
 	return (true);
 }

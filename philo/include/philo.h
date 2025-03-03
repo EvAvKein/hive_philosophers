@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 09:18:19 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/01 21:13:02 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/03 15:57:07 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include <stdlib.h>
 # include <stdbool.h>
 # include <string.h>
+# include <sys/time.h>
 # include <pthread.h>
 
 typedef struct s_philo_args {
@@ -36,9 +37,14 @@ typedef struct	s_feast
 {
 	int				status;
 	int				num_of_philos;
-	struct s_fork	*forks;
+	pthread_mutex_t	*forks;
 	pthread_t		*threads;
 	struct s_philo	*philos;
+	struct timeval	serve_time;
+	int				time_to_die;
+	int				time_to_eat;
+	int				time_to_sleep;
+	int				must_eat;
 }					t_feast;
 
 typedef struct	s_philo_init_data
@@ -48,39 +54,26 @@ typedef struct	s_philo_init_data
 	int				id;
 }					t_philo_init_data;
 
-typedef struct		s_fork
-{
-	pthread_mutex_t	mutex;
-	bool			available;
-}					t_fork;
-
-# define ABSENT		0
-# define DEAD		1
-# define SLEEPING	2
-# define THINKING	3
-# define EATING		4
-# define SATIATED	5
-
 typedef struct	s_philo
 {
 	t_feast				*feast;
 	struct s_philo		*next;
-	t_fork				*forks[2];
+	pthread_mutex_t		*forks[2];
 	int					id;
-	int					status;
-	int					time_to_die;
-	int					time_to_eat;
-	int					time_to_sleep;
-	int					must_eat;
+	struct timeval		last_satiated;
 	int					ate;
+	bool				dead;
 }						t_philo;
 
-int		philosophers(t_philo_args data);
 bool	launch_feast(t_feast *feast, t_philo_args data);
 void	*philo_routine(void *arg);
 void	wait_for_philos(t_feast *feast);
 bool	end_feast(t_feast *feast, char *announcement);
 
 size_t	ft_strlen(char *str);
+int		ms_since(struct timeval time);
+void	*philo_log(t_philo *philo, char *action);
+bool	starved_to_death(t_feast *feast, t_philo *philo);
+bool	usleep_until_death(t_feast *feast, t_philo *philo, int ms_time);
 
 #endif

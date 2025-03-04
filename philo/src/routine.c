@@ -6,64 +6,83 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 13:05:38 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/03 19:44:03 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/04 20:07:36 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static bool	drop_forks(pthread_mutex_t *fork1, pthread_mutex_t *fork2)
+// static bool	pickup_fork_until_death(
+// 	t_feast *feast, t_philo *philo, t_fork *fork)
+// {
+// 	while (!fork->available)
+// 	{
+// 		if (feast->status == CANCELLED || starved_to_death(feast, philo))
+// 			return (true);
+// 	}
+// 	fork->available = false;
+// 	if (feast->status == CANCELLED || starved_to_death(feast, philo))
+// 	{
+// 		fork->available = true;
+// 		return (true);
+// 	}
+// 	pthread_mutex_lock(&fork->mutex);
+// 	philo_log(philo, "has taken a fork");
+// 	return (false);
+// }
+
+static bool	drop_forks(t_fork *fork1, t_fork *fork2)
 {
 	if (fork1)
-		pthread_mutex_unlock(fork1);
+	{
+		pthread_mutex_unlock(&fork1->mutex);
+		fork1->available = true;
+	}
 	if (fork2)
-		pthread_mutex_unlock(fork2);
+	{
+		pthread_mutex_unlock(&fork2->mutex);
+		fork2->available = true;
+	}
 	return (false);
 }
 
 static bool	eat(t_feast *feast, t_philo *philo,
-	pthread_mutex_t *fork1, pthread_mutex_t *fork2)
+	t_fork *fork1, t_fork *fork2)
 {
 	if (feast->status == CANCELLED)
 		return (false);
-	pthread_mutex_lock(fork1);
+	
+	pthread_mutex_lock(&fork1->mutex);
 	philo_log(philo, "has taken a fork");
 	if (feast->status == CANCELLED || starved_to_death(feast, philo))
 		return (drop_forks(fork1, NULL));
-	pthread_mutex_lock(fork2);
+	// if (pickup_fork_until_death(feast, philo, fork1))
+	// 	return (drop_forks(fork1, NULL));
+	
+	pthread_mutex_lock(&fork2->mutex);
 	philo_log(philo, "has taken a fork");
 	if (feast->status == CANCELLED || starved_to_death(feast, philo))
 		return (drop_forks(fork1, fork2));
+	// if (pickup_fork_until_death(feast, philo, fork2))
+	// 	return (drop_forks(fork1, fork2));
+	
+	gettimeofday(&philo->last_satiated, NULL);
 	philo_log(philo, "is eating");
 	if (usleep_until_death(feast, philo, feast->time_to_eat, true))
 		return (drop_forks(fork1, fork2));
-	philo->ate++;
-	gettimeofday(&philo->last_satiated, NULL);
 	drop_forks(fork1, fork2);
+	philo->ate++;
 	return (true);
-}
-
-static bool	wait_for_serving(t_feast *feast)
-{
-	while (1)
-	{
-		if (feast->status == COOKING)
-			continue ;
-		if (feast->status == SERVED)
-			return (true);
-		if (feast->status == CANCELLED)
-			return (false);
-	}
 }
 
 static void	*die_alone(t_feast *feast, t_philo *philo)
 {
 	philo_log(philo, "is thinking");
-	pthread_mutex_lock(philo->forks[0]);
+	pthread_mutex_lock(&philo->forks[0]->mutex);
 	philo_log(philo, "has taken a fork");
 	while (!starved_to_death(feast, philo))
 		;
-	pthread_mutex_unlock(philo->forks[0]);
+	pthread_mutex_unlock(&philo->forks[0]->mutex);
 	return (NULL);
 }
 
@@ -74,21 +93,29 @@ void	*philo_routine(void *arg)
 
 	philo = (t_philo *)arg;
 	feast = philo->feast;
-	if (!wait_for_serving(feast))
+	while (feast->status == COOKING)
+		;
+	if (feast->status == CANCELLED)
 		return (NULL);
 	philo->last_satiated = feast->serve_time;
 	if (philo->forks[0] == philo->forks[1])
 		return (die_alone(feast, philo));
+	if (!(philo->id % 2))
+	{
+		philo_log(philo, "is thinking");
+		if (usleep_until_death(feast, philo, feast->time_to_eat, false))
+			return (NULL);
+	}
 	while (feast->status != CANCELLED)
 	{
 		if (feast->must_eat >= 0 && philo->ate == feast->must_eat)
 			return (NULL);
-		philo_log(philo, "is thinking");
 		if (!eat(feast, philo, philo->forks[0], philo->forks[1]))
 			return (NULL);
 		philo_log(philo, "is sleeping");
 		if (usleep_until_death(feast, philo, feast->time_to_sleep, false))
 			return (NULL);
+		philo_log(philo, "is thinking");
 	}
 	return (NULL);
 }

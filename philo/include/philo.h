@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 09:18:19 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/03 19:43:21 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/04 17:48:49 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,11 @@ typedef struct s_philo_args {
 	int		must_eat;
 }			t_philo_args;
 
+typedef struct s_fork {
+	pthread_mutex_t	mutex;
+	bool			available;
+}			t_fork;
+
 # define CANCELLED	0
 # define COOKING	1
 # define SERVED		2
@@ -38,7 +43,7 @@ typedef struct	s_feast
 	int				status;
 	int				num_of_philos;
 	pthread_mutex_t	stenographer;
-	pthread_mutex_t	*forks;
+	t_fork			*forks;
 	pthread_t		*threads;
 	struct s_philo	*philos;
 	struct timeval	serve_time;
@@ -59,7 +64,7 @@ typedef struct	s_philo
 {
 	t_feast				*feast;
 	struct s_philo		*next;
-	pthread_mutex_t		*forks[2];
+	t_fork				*forks[2];
 	int					id;
 	struct timeval		last_satiated;
 	int					ate;
@@ -76,6 +81,6 @@ long	ms_since(struct timeval time);
 void	*philo_log(t_philo *philo, char *action);
 bool	starved_to_death(t_feast *feast, t_philo *philo);
 bool	usleep_until_death(t_feast *feast, t_philo *philo,
-			int ms_time, bool eating);
+			long duration, bool eating);
 
 #endif

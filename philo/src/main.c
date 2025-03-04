@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 09:15:43 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/03 18:33:36 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/04 17:06:39 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ static bool parse_philo_args(t_philo_args *data, int argc, char **argv)
 	data->time_to_eat = ft_atoi_positive_strict(argv[3]);
 	data->time_to_sleep = ft_atoi_positive_strict(argv[4]);
 	if (data->num_of_philos < 0 || data->time_to_die < 0
-		|| data->time_to_eat < 0 || data->time_to_sleep < 0)
+		|| data->time_to_eat < 1 || data->time_to_sleep < 0)
 		return (0);
 	if (argc == 6)
 	{
@@ -65,7 +65,7 @@ static bool	prepare_feast(t_feast *feast, t_philo_args data)
 {
 	*feast = (t_feast){
 		.status = COOKING, .philos = NULL, .num_of_philos = data.num_of_philos,
-		.forks = malloc(sizeof(pthread_mutex_t) * (data.num_of_philos + 1)),
+		.forks = malloc(sizeof(t_fork) * (data.num_of_philos + 1)),
 		.threads = malloc(sizeof(pthread_t) * (data.num_of_philos + 1)),
 		.time_to_die = data.time_to_die,
 		.time_to_eat = data.time_to_eat,
@@ -85,7 +85,7 @@ static bool	prepare_feast(t_feast *feast, t_philo_args data)
 	memset(feast->threads, '\0',
 		sizeof(pthread_t) * (data.num_of_philos + 1));
 	memset(feast->forks, '\0',
-		sizeof(pthread_mutex_t) * (data.num_of_philos + 1));
+		sizeof(t_fork) * (data.num_of_philos + 1));
 	feast->num_of_philos = data.num_of_philos;
 	return (true);
 }

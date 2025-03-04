@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 13:47:39 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/03 19:44:55 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/04 17:18:28 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void	*philo_log(t_philo *philo, char *action)
 	if (philo->dead || philo->feast->status == SERVED)
 	{
 		pthread_mutex_lock(&philo->feast->stenographer);
-		if (philo->feast->status == CANCELLED)
+		if (!philo->dead && philo->feast->status == CANCELLED)
 		{
 			pthread_mutex_unlock(&philo->feast->stenographer);
 			return (NULL);
@@ -60,16 +60,18 @@ bool	starved_to_death(t_feast *feast, t_philo *philo)
 }
 
 bool	usleep_until_death(t_feast *feast, t_philo *philo,
-	int ms_time, bool eating)
+	long duration, bool eating)
 {	
-	while (ms_time)
+	struct timeval	start;
+
+	gettimeofday(&start, NULL);
+	while (ms_since(start) < duration)
 	{
 		if (feast->status == CANCELLED)
 			return (true);
 		if (!eating && starved_to_death(feast, philo))
 			return (true);
 		usleep(1000);
-		ms_time--;
 	}
 	return (feast->status == CANCELLED);
 }

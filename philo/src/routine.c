@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 13:05:38 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/04 20:07:36 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/04 20:25:52 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,6 @@ static bool	eat(t_feast *feast, t_philo *philo,
 
 static void	*die_alone(t_feast *feast, t_philo *philo)
 {
-	philo_log(philo, "is thinking");
 	pthread_mutex_lock(&philo->forks[0]->mutex);
 	philo_log(philo, "has taken a fork");
 	while (!starved_to_death(feast, philo))
@@ -97,15 +96,13 @@ void	*philo_routine(void *arg)
 		;
 	if (feast->status == CANCELLED)
 		return (NULL);
+	philo_log(philo, "is thinking");
 	philo->last_satiated = feast->serve_time;
 	if (philo->forks[0] == philo->forks[1])
 		return (die_alone(feast, philo));
-	if (!(philo->id % 2))
-	{
-		philo_log(philo, "is thinking");
-		if (usleep_until_death(feast, philo, feast->time_to_eat, false))
+	if (philo->id % 2
+		&& usleep_until_death(feast, philo, feast->time_to_eat, false))
 			return (NULL);
-	}
 	while (feast->status != CANCELLED)
 	{
 		if (feast->must_eat >= 0 && philo->ate == feast->must_eat)

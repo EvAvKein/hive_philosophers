@@ -33,7 +33,7 @@ static t_philo	*welcome_philo(t_philo_init_data data)
 	};
 	if (data.id == data.args.num_of_philos)
 	{
-		philo->forks[0] = &data.feast->forks[data.id & data.args.num_of_philos];
+		philo->forks[0] = &data.feast->forks[data.id % data.args.num_of_philos];
 		philo->forks[1] = &data.feast->forks[data.id - 1];
 	}
 	return (philo);

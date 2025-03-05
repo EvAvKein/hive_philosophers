@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 13:05:38 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/05 19:58:56 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/05 20:32:07 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ static bool	eat(t_feast *feast, t_philo *philo,
 	{
 		if (usleep_until_death(
 				feast, philo, feast->time_to_eat
-			, false))
+				, false))
 			return (NULL);
 	}
 	if (pickup_fork_until_death(feast, philo, fork1))
@@ -112,7 +112,7 @@ void	*philo_routine(void *arg)
 		return (die_alone(feast, philo));
 	if (philo->id % 2
 		&& usleep_until_death(feast, philo, feast->time_to_eat, false))
-			return (NULL);
+		return (NULL);
 	philoop(feast, philo);
 	return (NULL);
 }

@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 14:12:53 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/05 17:01:42 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/05 20:12:37 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	wait_for_philos(t_feast *feast)
 {
 	int			i;
-	
+
 	if (feast->threads)
 	{
 		i = 0;
@@ -35,7 +35,7 @@ static void	free_all_philos(t_philo *philos)
 	t_philo		*first_philo;
 	t_philo		*current_philo;
 	t_philo		*next_philo;
-	
+
 	first_philo = philos;
 	current_philo = first_philo;
 	while (current_philo)
@@ -48,15 +48,15 @@ static void	free_all_philos(t_philo *philos)
 	}
 }
 
-bool end_feast(t_feast *feast, char *announcement)
+bool	end_feast(t_feast *feast, char *announcement)
 {
-	size_t len;
+	size_t	len;
 
 	feast->status = CANCELLED;
 	if (announcement)
 	{
 		len = 0;
-		while(announcement[len])
+		while (announcement[len])
 			len++;
 		write(STDERR_FILENO, announcement, len);
 	}

@@ -12,29 +12,28 @@
 
 #include "philo.h"
 
-static t_philo	*welcome_philo(t_philo_init_data data)
+static t_philo	*welcome_philo(t_feast *feast, t_philo_args args, int id)
 {
 	t_philo	*philo;
 
 	philo = malloc(sizeof(t_philo));
 	if (!philo)
 	{
-		end_feast(data.feast, "Feast off: Philo malloc failed :(\n");
+		end_feast(feast, "Feast off: Philo malloc failed :(\n");
 		return (NULL);
 	}
 	*philo = (t_philo){
-		.feast = data.feast, .next = NULL,
-		.id = data.id, .dead = false,
+		.feast = feast, .next = NULL,
+		.id = id, .dead = false,
 		.forks = {
-			&data.feast->forks[data.id - 1],
-			&data.feast->forks[data.id % data.args.num_of_philos]
-		},
+		&feast->forks[id - 1],
+		&feast->forks[id % args.num_of_philos]},
 		.ate = 0, .last_satiated = {}
 	};
-	if (data.id == data.args.num_of_philos)
+	if (id == args.num_of_philos)
 	{
-		philo->forks[0] = &data.feast->forks[data.id % data.args.num_of_philos];
-		philo->forks[1] = &data.feast->forks[data.id - 1];
+		philo->forks[0] = &feast->forks[id % args.num_of_philos];
+		philo->forks[1] = &feast->forks[id - 1];
 	}
 	return (philo);
 }
@@ -44,36 +43,30 @@ static bool	welcome_philos(t_feast *feast, t_philo_args data)
 	t_philo		*append_philo;
 	t_philo		*philo;
 	int			i;
-	
+
 	i = 0;
+	feast->philos = welcome_philo(feast, data, ++i);
+	if (!feast->philos)
+		return (false);
+	append_philo = feast->philos;
 	while (i < data.num_of_philos)
 	{
-		philo = welcome_philo((t_philo_init_data){
-			.args = data, .feast = feast, .id = ++i});
+		philo = welcome_philo(feast, data, ++i);
 		if (!philo)
 			return (false);
-		if (!feast->philos)
-		{
-			feast->philos = philo;
-			append_philo = philo;
-		}
-		else 
-		{
-			append_philo->next = philo;
-			append_philo = philo;
-		}
+		append_philo->next = philo;
+		append_philo = philo;
 	}
-	philo->next = feast->philos;
 	return (true);
 }
 
-static bool thread_all_philos(t_feast *feast)
+static bool	thread_all_philos(t_feast *feast)
 {
 	pthread_t	thread;
 	t_philo		*philo;
 	int			i;
 
-	philo = feast->philos;	
+	philo = feast->philos;
 	i = 0;
 	while (i < feast->num_of_philos)
 	{
@@ -85,7 +78,7 @@ static bool thread_all_philos(t_feast *feast)
 	return (true);
 }
 
-static bool place_forks(t_feast *feast)
+static bool	place_forks(t_feast *feast)
 {
 	int	i;
 
@@ -99,7 +92,7 @@ static bool place_forks(t_feast *feast)
 	return (true);
 }
 
-bool launch_feast(t_feast *feast, t_philo_args data)
+bool	launch_feast(t_feast *feast, t_philo_args data)
 {
 	if (!place_forks(feast))
 		return (false);

@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 09:15:43 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/04 17:06:39 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/05 20:12:06 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,8 @@ static int	ft_atoi_positive_strict(char *str)
 		return (-1);
 	return (num);
 }
-	
-static bool parse_philo_args(t_philo_args *data, int argc, char **argv)
+
+static bool	parse_philo_args(t_philo_args *data, int argc, char **argv)
 {
 	data->num_of_philos = ft_atoi_positive_strict(argv[1]);
 	data->time_to_die = ft_atoi_positive_strict(argv[2]);
@@ -92,7 +92,7 @@ static bool	prepare_feast(t_feast *feast, t_philo_args data)
 
 static int	philosophers(t_philo_args data)
 {
-	t_feast feast;
+	t_feast	feast;
 
 	if (!prepare_feast(&feast, data))
 		return (EXIT_FAILURE);
@@ -102,20 +102,22 @@ static int	philosophers(t_philo_args data)
 	free(feast.threads);
 	feast.threads = NULL;
 	end_feast(&feast, NULL);
-	return (EXIT_SUCCESS);	
+	return (EXIT_SUCCESS);
 }
-int main(int argc, char **argv)
+
+int	main(int argc, char **argv)
 {
-	t_philo_args data;
-	
+	t_philo_args	data;
+
 	if (argc < 5 || argc > 6)
 	{
 		write(STDERR_FILENO, "./philo program arguments:\n\
  - number_of_philosophers\n - time_to_die\n\
  - time_to_eat\n - time_to_sleep\n\
- - number_of_times_each_philosopher_must_eat \033[37m(optional)\033[0m\n", 166);
+ - number_of_times_each_philosopher_must_eat \033[37m(optional)\033[0m\n",
+			166);
 		return (EXIT_FAILURE);
-	}		
+	}
 	if (!parse_philo_args(&data, argc, argv))
 	{
 		write(STDERR_FILENO, "Invalid philo arguments\

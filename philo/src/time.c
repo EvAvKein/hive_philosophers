@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 19:37:46 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/05 19:39:21 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/05 20:33:02 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,10 @@ long	ms_of(struct timeval timestamp)
 	return (((timestamp.tv_sec * 1000) + (timestamp.tv_usec / 1000)));
 }
 
-long	ms_now()
+long	ms_now(void)
 {
-	struct	timeval		current;
+	struct timeval		current;
+
 	gettimeofday(&current, NULL);
 	return (ms_of(current));
 }

@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 09:18:19 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/05 19:51:46 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/05 20:30:11 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,8 @@
 # include <sys/time.h>
 # include <pthread.h>
 
-typedef struct s_philo_args {
+typedef struct s_philo_args
+{
 	int		num_of_philos;
 	int		time_to_die;
 	int		time_to_eat;
@@ -29,7 +30,8 @@ typedef struct s_philo_args {
 	int		must_eat;
 }			t_philo_args;
 
-typedef struct s_fork {
+typedef struct s_fork
+{
 	pthread_mutex_t	mutex;
 	bool			available;
 }			t_fork;
@@ -38,7 +40,7 @@ typedef struct s_fork {
 # define COOKING	1
 # define SERVED		2
 
-typedef struct	s_feast
+typedef struct s_feast
 {
 	int				status;
 	int				num_of_philos;
@@ -53,14 +55,7 @@ typedef struct	s_feast
 	int				must_eat;
 }					t_feast;
 
-typedef struct	s_philo_init_data
-{
-	t_philo_args	args;
-	t_feast			*feast;
-	int				id;
-}					t_philo_init_data;
-
-typedef struct	s_philo
+typedef struct s_philo
 {
 	t_feast				*feast;
 	struct s_philo		*next;
@@ -77,7 +72,7 @@ void	wait_for_philos(t_feast *feast);
 bool	end_feast(t_feast *feast, char *announcement);
 
 long	ms_of(struct timeval timestamp);
-long	ms_now();
+long	ms_now(void);
 long	ms_since(struct timeval time);
 
 void	*philo_log(t_philo *philo, char *action);

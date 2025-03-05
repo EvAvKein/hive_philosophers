@@ -6,28 +6,11 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 13:47:39 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/05 17:15:54 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/05 19:51:36 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-long	ms_of(struct timeval timestamp)
-{
-	return (((timestamp.tv_sec * 1000) + (timestamp.tv_usec / 1000)));
-}
-
-long	ms_now()
-{
-	struct	timeval		current;
-	gettimeofday(&current, NULL);
-	return (ms_of(current));
-}
-
-long	ms_since(struct timeval time)
-{
-	return (ms_now() - ms_of(time));
-}
 
 void	*philo_log(t_philo *philo, char *action)
 {
@@ -44,6 +27,20 @@ void	*philo_log(t_philo *philo, char *action)
 		pthread_mutex_unlock(&philo->feast->stenographer);
 	}
 	return (NULL);
+}
+bool	drop_forks(t_fork *fork1, t_fork *fork2)
+{
+	if (fork1)
+	{
+		pthread_mutex_unlock(&fork1->mutex);
+		fork1->available = true;
+	}
+	if (fork2)
+	{
+		pthread_mutex_unlock(&fork2->mutex);
+		fork2->available = true;
+	}
+	return (false);
 }
 
 bool	starved_to_death(t_feast *feast, t_philo *philo)

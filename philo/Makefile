@@ -6,7 +6,7 @@
 #    By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/02/26 19:12:41 by ekeinan           #+#    #+#              #
-#    Updated: 2025/03/03 15:57:29 by ekeinan          ###   ########.fr        #
+#    Updated: 2025/03/05 20:04:46 by ekeinan          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,6 +16,7 @@ SRC_DIR := src
 SRC_FILES := main.c \
 			 launch_feast.c \
 			 routine.c \
+			 time.c \
 			 utils.c \
 			 cleanup.c
 

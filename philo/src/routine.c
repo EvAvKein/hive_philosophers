@@ -6,11 +6,21 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 13:05:38 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/05 19:21:59 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/05 19:58:56 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+static void	*die_alone(t_feast *feast, t_philo *philo)
+{
+	pthread_mutex_lock(&philo->forks[0]->mutex);
+	philo_log(philo, "has taken a fork");
+	while (!starved_to_death(feast, philo))
+		;
+	pthread_mutex_unlock(&philo->forks[0]->mutex);
+	return (NULL);
+}
 
 static bool	pickup_fork_until_death(
 	t_feast *feast, t_philo *philo, t_fork *fork)
@@ -30,21 +40,6 @@ static bool	pickup_fork_until_death(
 		return (true);
 	}
 	philo_log(philo, "has taken a fork");
-	return (false);
-}
-
-static bool	drop_forks(t_fork *fork1, t_fork *fork2)
-{
-	if (fork1)
-	{
-		pthread_mutex_unlock(&fork1->mutex);
-		fork1->available = true;
-	}
-	if (fork2)
-	{
-		pthread_mutex_unlock(&fork2->mutex);
-		fork2->available = true;
-	}
 	return (false);
 }
 
@@ -76,14 +71,28 @@ static bool	eat(t_feast *feast, t_philo *philo,
 	return (true);
 }
 
-static void	*die_alone(t_feast *feast, t_philo *philo)
+static void	philoop(t_feast *feast, t_philo *philo)
 {
-	pthread_mutex_lock(&philo->forks[0]->mutex);
-	philo_log(philo, "has taken a fork");
-	while (!starved_to_death(feast, philo))
-		;
-	pthread_mutex_unlock(&philo->forks[0]->mutex);
-	return (NULL);
+	while (feast->status != CANCELLED)
+	{
+		if (feast->must_eat >= 0 && philo->ate == feast->must_eat)
+			return ;
+		if (!eat(feast, philo, philo->forks[0], philo->forks[1]))
+			return ;
+		philo_log(philo, "is sleeping");
+		if (usleep_until_death(feast, philo, feast->time_to_sleep, false))
+			return ;
+		philo_log(philo, "is thinking");
+		if ((feast->time_to_eat + feast->time_to_sleep) < feast->time_to_die)
+		{
+			if (usleep_until_death(
+					feast, philo,
+					(feast->time_to_die
+						- feast->time_to_sleep - feast->time_to_eat) / 2,
+					false))
+				return ;
+		}
+	}
 }
 
 void	*philo_routine(void *arg)
@@ -104,23 +113,6 @@ void	*philo_routine(void *arg)
 	if (philo->id % 2
 		&& usleep_until_death(feast, philo, feast->time_to_eat, false))
 			return (NULL);
-	while (feast->status != CANCELLED)
-	{
-		if (feast->must_eat >= 0 && philo->ate == feast->must_eat)
-			return (NULL);
-		if (!eat(feast, philo, philo->forks[0], philo->forks[1]))
-			return (NULL);
-		philo_log(philo, "is sleeping");
-		if (usleep_until_death(feast, philo, feast->time_to_sleep, false))
-			return (NULL);
-		philo_log(philo, "is thinking");
-		if ((feast->time_to_eat + feast->time_to_sleep) < feast->time_to_die)
-		{
-			if (usleep_until_death(feast, philo,
-				(feast->time_to_die - feast->time_to_sleep - feast->time_to_eat) / 2,
-				false))
-				return (NULL);
-		}
-	}
+	philoop(feast, philo);
 	return (NULL);
 }

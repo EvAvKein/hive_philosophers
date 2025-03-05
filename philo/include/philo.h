@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 09:18:19 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/05 17:16:28 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/05 19:51:46 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,9 @@ bool	end_feast(t_feast *feast, char *announcement);
 long	ms_of(struct timeval timestamp);
 long	ms_now();
 long	ms_since(struct timeval time);
+
 void	*philo_log(t_philo *philo, char *action);
+bool	drop_forks(t_fork *fork1, t_fork *fork2);
 bool	starved_to_death(t_feast *feast, t_philo *philo);
 bool	usleep_until_death(t_feast *feast, t_philo *philo,
 			long ms_duration, bool eating);

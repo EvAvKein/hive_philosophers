@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 13:05:38 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/05 18:35:32 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/05 19:21:59 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,15 +53,13 @@ static bool	eat(t_feast *feast, t_philo *philo,
 {
 	if (feast->status == CANCELLED)
 		return (false);
-	if ((ms_now() > ms_of(feast->serve_time))
-		//&& philo->id != feast->num_of_philos
-		&& !(philo->id % 2)
-		&& (ms_of(philo->last_satiated) + feast->time_to_die)
-			> (ms_now() + feast->time_to_eat))
+	if (!(philo->id % 2)
+		&& ((ms_now() - ms_of(feast->serve_time)) > 3)
+		&& ((ms_now() + feast->time_to_eat)
+			< ms_of(philo->last_satiated) + feast->time_to_die))
 	{
 		if (usleep_until_death(
 				feast, philo, feast->time_to_eat
-				//feast, philo, feast->time_to_eat / ((philo->id % 2) + 1)
 			, false))
 			return (NULL);
 	}
@@ -116,6 +114,13 @@ void	*philo_routine(void *arg)
 		if (usleep_until_death(feast, philo, feast->time_to_sleep, false))
 			return (NULL);
 		philo_log(philo, "is thinking");
+		if ((feast->time_to_eat + feast->time_to_sleep) < feast->time_to_die)
+		{
+			if (usleep_until_death(feast, philo,
+				(feast->time_to_die - feast->time_to_sleep - feast->time_to_eat) / 2,
+				false))
+				return (NULL);
+		}
 	}
 	return (NULL);
 }

@@ -6,28 +6,27 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 13:47:39 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/05 09:23:29 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/05 17:15:54 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-size_t	ft_strlen(char *str)
+long	ms_of(struct timeval timestamp)
 {
-	size_t i;
+	return (((timestamp.tv_sec * 1000) + (timestamp.tv_usec / 1000)));
+}
 
-	i = 0;
-	while(str[i])
-		i++;
-	return (i);
+long	ms_now()
+{
+	struct	timeval		current;
+	gettimeofday(&current, NULL);
+	return (ms_of(current));
 }
 
 long	ms_since(struct timeval time)
 {
-	struct	timeval		current;
-	gettimeofday(&current, NULL);
-	return (((current.tv_sec * 1000) + (current.tv_usec / 1000))
-		- ((time.tv_sec * 1000) + (time.tv_usec / 1000)));
+	return (ms_now() - ms_of(time));
 }
 
 void	*philo_log(t_philo *philo, char *action)
@@ -40,7 +39,7 @@ void	*philo_log(t_philo *philo, char *action)
 			pthread_mutex_unlock(&philo->feast->stenographer);
 			return (NULL);
 		}
-		printf("[%li] %i %s\n",
+		printf("%li %i %s\n",
 			ms_since(philo->feast->serve_time), philo->id, action);
 		pthread_mutex_unlock(&philo->feast->stenographer);
 	}
@@ -61,12 +60,12 @@ bool	starved_to_death(t_feast *feast, t_philo *philo)
 }
 
 bool	usleep_until_death(t_feast *feast, t_philo *philo,
-	long duration, bool eating)
+	long ms_duration, bool eating)
 {	
 	struct timeval	start;
 
 	gettimeofday(&start, NULL);
-	while (ms_since(start) < duration)
+	while (ms_since(start) < ms_duration)
 	{
 		if (feast->status == CANCELLED)
 			return (true);

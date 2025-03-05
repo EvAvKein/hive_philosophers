@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 13:47:39 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/04 17:18:28 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/05 09:23:29 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,9 @@ bool	starved_to_death(t_feast *feast, t_philo *philo)
 {	
 	if (ms_since(philo->last_satiated) > feast->time_to_die)
 	{
+		if (feast->status == SERVED)
+			philo->dead = true;
 		feast->status = CANCELLED;
-		philo->dead = true;
 		philo_log(philo, "died");
 		return (true);
 	}

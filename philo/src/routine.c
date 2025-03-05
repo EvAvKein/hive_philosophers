@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 13:05:38 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/05 20:32:07 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/05 20:58:09 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,9 +59,9 @@ static bool	eat(t_feast *feast, t_philo *philo,
 			return (NULL);
 	}
 	if (pickup_fork_until_death(feast, philo, fork1))
-		return (drop_forks(fork1, NULL));
+		return (NULL);
 	if (pickup_fork_until_death(feast, philo, fork2))
-		return (drop_forks(fork1, fork2));
+		return (drop_forks(fork1, NULL));
 	gettimeofday(&philo->last_satiated, NULL);
 	philo_log(philo, "is eating");
 	if (usleep_until_death(feast, philo, feast->time_to_eat, true))

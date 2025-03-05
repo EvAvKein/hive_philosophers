@@ -85,8 +85,12 @@ static bool	place_forks(t_feast *feast)
 	i = 0;
 	while (i < feast->num_of_philos)
 	{
-		// HANDLE INIT FAILURES
-		pthread_mutex_init(&feast->forks[i].mutex, NULL);
+		if (pthread_mutex_init(&feast->forks[i].mutex, NULL))
+		{
+			while (i)
+				pthread_mutex_destroy(&feast->forks[--i].mutex);
+			return (false);
+		}
 		feast->forks[i++].available = true;
 	}
 	return (true);

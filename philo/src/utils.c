@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 13:47:39 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/05 20:32:30 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/06 10:48:49 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	*philo_log(t_philo *philo, char *action)
 {
-	if (philo->dead || philo->feast->status == SERVED)
+	if (philo->dead || philo->feast->status == CRAVINGS)
 	{
 		pthread_mutex_lock(&philo->feast->stenographer);
 		if (!philo->dead && philo->feast->status == CANCELLED)
@@ -48,7 +48,7 @@ bool	starved_to_death(t_feast *feast, t_philo *philo)
 {
 	if (ms_since(philo->last_satiated) > feast->time_to_die)
 	{
-		if (feast->status == SERVED)
+		if (feast->status == CRAVINGS)
 			philo->dead = true;
 		feast->status = CANCELLED;
 		philo_log(philo, "died");

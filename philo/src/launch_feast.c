@@ -23,8 +23,8 @@ static t_philo	*welcome_philo(t_feast *feast, t_philo_args args, int id)
 		return (NULL);
 	}
 	*philo = (t_philo){
-		.feast = feast, .next = NULL,
-		.id = id, .dead = false,
+		.feast = feast,
+		.id = id, .dead = false, .next = NULL,
 		.forks = {
 		&feast->forks[id - 1],
 		&feast->forks[id % args.num_of_philos]},
@@ -105,6 +105,6 @@ bool	launch_feast(t_feast *feast, t_philo_args data)
 	if (!thread_all_philos(feast))
 		return (false);
 	gettimeofday(&feast->serve_time, NULL);
-	feast->status = SERVED;
+	feast->status = CRAVINGS;
 	return (true);
 }

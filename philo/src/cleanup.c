@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 14:12:53 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/05 20:12:37 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/06 11:20:28 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,12 +24,6 @@ void	wait_for_philos(t_feast *feast)
 	}
 }
 
-static void	destroy_all_forks(t_fork *forks, int fork_count)
-{
-	while (fork_count--)
-		pthread_mutex_destroy(&forks[fork_count].mutex);
-}
-
 static void	free_all_philos(t_philo *philos)
 {
 	t_philo		*first_philo;
@@ -45,6 +39,18 @@ static void	free_all_philos(t_philo *philos)
 		if (next_philo == first_philo)
 			break ;
 		current_philo = next_philo;
+	}
+}
+
+static void	destroy_all_forks(t_feast *feast)
+{
+	int			i;
+
+	if (feast->forks)
+	{
+		i = 0;
+		while (i < feast->num_of_philos)
+			pthread_mutex_destroy(&feast->forks[i++].mutex);
 	}
 }
 
@@ -67,7 +73,7 @@ bool	end_feast(t_feast *feast, char *announcement)
 	}
 	if (feast->forks)
 	{
-		destroy_all_forks(feast->forks, feast->num_of_philos);
+		destroy_all_forks(feast);
 		free(feast->forks);
 	}
 	free_all_philos(feast->philos);

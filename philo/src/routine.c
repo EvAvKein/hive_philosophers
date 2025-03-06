@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 13:05:38 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/05 20:58:09 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/06 10:47:55 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,9 +53,7 @@ static bool	eat(t_feast *feast, t_philo *philo,
 		&& ((ms_now() + feast->time_to_eat)
 			< ms_of(philo->last_satiated) + feast->time_to_die))
 	{
-		if (usleep_until_death(
-				feast, philo, feast->time_to_eat
-				, false))
+		if (usleep_until_death(feast, philo, feast->time_to_eat, false))
 			return (NULL);
 	}
 	if (pickup_fork_until_death(feast, philo, fork1))
@@ -73,7 +71,7 @@ static bool	eat(t_feast *feast, t_philo *philo,
 
 static void	philoop(t_feast *feast, t_philo *philo)
 {
-	while (feast->status != CANCELLED)
+	while (feast->status == CRAVINGS)
 	{
 		if (feast->must_eat >= 0 && philo->ate == feast->must_eat)
 			return ;

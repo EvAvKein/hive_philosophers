@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 09:18:19 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/05 20:30:11 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/06 11:17:34 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ typedef struct s_fork
 
 # define CANCELLED	0
 # define COOKING	1
-# define SERVED		2
+# define CRAVINGS	2
 
 typedef struct s_feast
 {

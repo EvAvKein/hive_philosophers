@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 14:12:53 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/06 11:20:28 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/06 14:07:15 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	wait_for_philos(t_feast *feast)
 	if (feast->threads)
 	{
 		i = 0;
-		while (i < feast->num_of_philos)
+		while (i < feast->num_of_philos && feast->threads[i])
 			pthread_join(feast->threads[i++], NULL);
 	}
 }

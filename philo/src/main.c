@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 09:15:43 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/05 20:12:06 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/06 11:23:38 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ static bool	parse_philo_args(t_philo_args *data, int argc, char **argv)
 	data->time_to_eat = ft_atoi_positive_strict(argv[3]);
 	data->time_to_sleep = ft_atoi_positive_strict(argv[4]);
 	if (data->num_of_philos < 0 || data->time_to_die < 0
-		|| data->time_to_eat < 1 || data->time_to_sleep < 0)
+		|| data->time_to_eat < 0 || data->time_to_sleep < 0)
 		return (0);
 	if (argc == 6)
 	{

@@ -6,22 +6,24 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 14:12:53 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/06 14:07:15 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/10 13:57:49 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	wait_for_philos(t_feast *feast)
+void	wait_for_everyone(t_feast *feast)
 {
 	int			i;
 
-	if (feast->threads)
+	if (feast->philo_threads)
 	{
 		i = 0;
-		while (i < feast->num_of_philos && feast->threads[i])
-			pthread_join(feast->threads[i++], NULL);
+		while (i < feast->num_of_philos && feast->philo_threads[i])
+			pthread_join(feast->philo_threads[i++], NULL);
 	}
+	if (feast->grim_reaper_thread)
+		pthread_join(feast->grim_reaper_thread, NULL);
 }
 
 static void	free_all_philos(t_philo *philos)
@@ -42,6 +44,12 @@ static void	free_all_philos(t_philo *philos)
 	}
 }
 
+static void	destroy_all_locks(t_feast *feast)
+{
+	pthread_mutex_destroy(&feast->status_check);
+	pthread_mutex_destroy(&feast->stenographer);
+}
+
 static void	destroy_all_forks(t_feast *feast)
 {
 	int			i;
@@ -50,7 +58,7 @@ static void	destroy_all_forks(t_feast *feast)
 	{
 		i = 0;
 		while (i < feast->num_of_philos)
-			pthread_mutex_destroy(&feast->forks[i++].mutex);
+			pthread_mutex_destroy(&feast->forks[i++]);
 	}
 }
 
@@ -58,7 +66,7 @@ bool	end_feast(t_feast *feast, char *announcement)
 {
 	size_t	len;
 
-	feast->status = CANCELLED;
+	set_status(feast, CANCELLED);
 	if (announcement)
 	{
 		len = 0;
@@ -66,16 +74,18 @@ bool	end_feast(t_feast *feast, char *announcement)
 			len++;
 		write(STDERR_FILENO, announcement, len);
 	}
-	if (feast->threads)
+	if (feast->philo_threads)
 	{
-		wait_for_philos(feast);
-		free(feast->threads);
+		wait_for_everyone(feast);
+		free(feast->philo_threads);
 	}
 	if (feast->forks)
 	{
 		destroy_all_forks(feast);
 		free(feast->forks);
+		feast->forks = NULL;
 	}
+	destroy_all_locks(feast);
 	free_all_philos(feast->philos);
 	return (false);
 }

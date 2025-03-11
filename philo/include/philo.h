@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 09:18:19 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/06 11:17:34 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/11 11:15:58 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,55 +30,62 @@ typedef struct s_philo_args
 	int		must_eat;
 }			t_philo_args;
 
-typedef struct s_fork
+typedef enum e_status
 {
-	pthread_mutex_t	mutex;
-	bool			available;
-}			t_fork;
-
-# define CANCELLED	0
-# define COOKING	1
-# define CRAVINGS	2
+	CANCELLED,
+	COOKING,
+	CRAVINGS,
+}			t_status;
 
 typedef struct s_feast
 {
 	int				status;
-	int				num_of_philos;
+	pthread_mutex_t	status_check;
 	pthread_mutex_t	stenographer;
-	t_fork			*forks;
-	pthread_t		*threads;
+	pthread_mutex_t	*forks;
+	pthread_t		grim_reaper_thread;
+	pthread_t		*philo_threads;
 	struct s_philo	*philos;
 	struct timeval	serve_time;
+	int				num_of_philos;
 	int				time_to_die;
 	int				time_to_eat;
 	int				time_to_sleep;
 	int				must_eat;
 }					t_feast;
 
+typedef struct s_philo_hand
+{
+	pthread_mutex_t	*fork;
+	bool			gripping;
+}					t_philo_hand;
+
 typedef struct s_philo
 {
-	t_feast				*feast;
-	struct s_philo		*next;
-	t_fork				*forks[2];
-	int					id;
-	struct timeval		last_satiated;
-	int					ate;
-	bool				dead;
+	t_feast			*feast;
+	struct s_philo	*next;
+	t_philo_hand	hands[2];
+	int				id;
+	long			last_satiated;
+	int				ate;
 }						t_philo;
 
 bool	launch_feast(t_feast *feast, t_philo_args data);
+void	*grim_reaper_routine(void *arg);
 void	*philo_routine(void *arg);
-void	wait_for_philos(t_feast *feast);
+void	wait_for_everyone(t_feast *feast);
 bool	end_feast(t_feast *feast, char *announcement);
 
 long	ms_of(struct timeval timestamp);
 long	ms_now(void);
 long	ms_since(struct timeval time);
 
-void	*philo_log(t_philo *philo, char *action);
-bool	drop_forks(t_fork *fork1, t_fork *fork2);
-bool	starved_to_death(t_feast *feast, t_philo *philo);
-bool	usleep_until_death(t_feast *feast, t_philo *philo,
-			long ms_duration, bool eating);
+bool	is_cancelled(t_feast *feast);
+void	set_status(t_feast *feast, t_status	status);
+
+int		ft_atoi_positive_strict(char *str);
+void	*philo_log(t_philo *philo, char *action, bool death);
+bool	drop_forks(t_philo_hand *hand1, t_philo_hand *hand2);
+bool	usleep_until_cancelled(t_feast *feast, long ms_duration);
 
 #endif

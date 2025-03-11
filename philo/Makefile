@@ -6,7 +6,7 @@
 #    By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/02/26 19:12:41 by ekeinan           #+#    #+#              #
-#    Updated: 2025/03/05 20:04:46 by ekeinan          ###   ########.fr        #
+#    Updated: 2025/03/11 10:36:19 by ekeinan          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,8 +15,10 @@ NAME := philo
 SRC_DIR := src
 SRC_FILES := main.c \
 			 launch_feast.c \
-			 routine.c \
+			 philo.c \
+			 grim_reaper.c \
 			 time.c \
+			 status.c \
 			 utils.c \
 			 cleanup.c
 

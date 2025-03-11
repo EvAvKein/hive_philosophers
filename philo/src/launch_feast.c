@@ -24,16 +24,18 @@ static t_philo	*welcome_philo(t_feast *feast, t_philo_args args, int id)
 	}
 	*philo = (t_philo){
 		.feast = feast,
-		.id = id, .dead = false, .next = NULL,
-		.forks = {
-		&feast->forks[id - 1],
-		&feast->forks[id % args.num_of_philos]},
-		.ate = 0, .last_satiated = {}
+		.id = id, .next = NULL,
+		.hands = {
+		(t_philo_hand){.fork = &feast->forks[id - 1],
+		.gripping = false},
+		(t_philo_hand){.fork = &feast->forks[id % args.num_of_philos],
+		.gripping = false}},
+		.ate = 0, .last_satiated = 0
 	};
 	if (id == args.num_of_philos)
 	{
-		philo->forks[0] = &feast->forks[id % args.num_of_philos];
-		philo->forks[1] = &feast->forks[id - 1];
+		philo->hands[0].fork = &feast->forks[id % args.num_of_philos];
+		philo->hands[1].fork = &feast->forks[id - 1];
 	}
 	return (philo);
 }
@@ -57,22 +59,34 @@ static bool	welcome_philos(t_feast *feast, t_philo_args data)
 		append_philo->next = philo;
 		append_philo = philo;
 	}
+	append_philo->next = feast->philos;
 	return (true);
 }
 
-static bool	thread_all_philos(t_feast *feast)
+static bool	thread_everyone(t_feast *feast)
 {
 	pthread_t	thread;
 	t_philo		*philo;
 	int			i;
 
+	if (pthread_create(&thread, NULL, grim_reaper_routine, feast))
+	{
+		pthread_mutex_unlock(&feast->status_check);
+		return (end_feast(feast,
+				"Feast off: Grim Reaper threading failed :(\n"));
+	}
+	feast->grim_reaper_thread = thread;
 	philo = feast->philos;
 	i = 0;
 	while (i < feast->num_of_philos)
 	{
 		if (pthread_create(&thread, NULL, philo_routine, philo))
-			return (end_feast(feast, "Feast off: Threading failed :(\n"));
-		feast->threads[i++] = thread;
+		{
+			pthread_mutex_unlock(&feast->status_check);
+			return (end_feast(feast,
+					"Feast off: Philo threading failed :(\n"));
+		}
+		feast->philo_threads[i++] = thread;
 		philo = philo->next;
 	}
 	return (true);
@@ -85,13 +99,13 @@ static bool	place_forks(t_feast *feast)
 	i = 0;
 	while (i < feast->num_of_philos)
 	{
-		if (pthread_mutex_init(&feast->forks[i].mutex, NULL))
+		if (pthread_mutex_init(&feast->forks[i], NULL))
 		{
 			while (i)
-				pthread_mutex_destroy(&feast->forks[--i].mutex);
+				pthread_mutex_destroy(&feast->forks[--i]);
 			return (false);
 		}
-		feast->forks[i++].available = true;
+		i++;
 	}
 	return (true);
 }
@@ -102,9 +116,11 @@ bool	launch_feast(t_feast *feast, t_philo_args data)
 		return (false);
 	if (!welcome_philos(feast, data))
 		return (false);
-	if (!thread_all_philos(feast))
+	pthread_mutex_lock(&feast->status_check);
+	if (!thread_everyone(feast))
 		return (false);
 	gettimeofday(&feast->serve_time, NULL);
 	feast->status = CRAVINGS;
+	pthread_mutex_unlock(&feast->status_check);
 	return (true);
 }

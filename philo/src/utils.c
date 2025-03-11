@@ -6,70 +6,80 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 13:47:39 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/06 10:48:49 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/11 11:12:07 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	*philo_log(t_philo *philo, char *action)
+int	ft_atoi_positive_strict(char *str)
 {
-	if (philo->dead || philo->feast->status == CRAVINGS)
+	size_t	i;
+	int		num;
+
+	if (!str)
+		return (-1);
+	if (str[0] == '-')
 	{
-		pthread_mutex_lock(&philo->feast->stenographer);
-		if (!philo->dead && philo->feast->status == CANCELLED)
-		{
-			pthread_mutex_unlock(&philo->feast->stenographer);
-			return (NULL);
-		}
-		printf("%li %i %s\n",
-			ms_since(philo->feast->serve_time), philo->id, action);
-		pthread_mutex_unlock(&philo->feast->stenographer);
+		if (str[1] == '0' && !str[2])
+			return (0);
+		else
+			return (-1);
 	}
+	i = 0;
+	num = 0;
+	if ((!(*str >= '0' && *str <= '9') && !((str[0] == '+') && ++i)) || !str[i])
+		return (-1);
+	while (str[i] >= '0' && str[i] <= '9')
+	{
+		num = (num * 10) + (str[i++] - '0');
+		if (num < 0)
+			return (-1);
+	}
+	if (str[i])
+		return (-1);
+	return (num);
+}
+
+void	*philo_log(t_philo *philo, char *action, bool death)
+{
+	pthread_mutex_lock(&philo->feast->stenographer);
+	if (!death && philo->feast->status == CANCELLED)
+	{
+		pthread_mutex_unlock(&philo->feast->stenographer);
+		return (NULL);
+	}
+	printf("%li %i %s\n",
+		ms_since(philo->feast->serve_time), philo->id, action);
+	pthread_mutex_unlock(&philo->feast->stenographer);
 	return (NULL);
 }
 
-bool	drop_forks(t_fork *fork1, t_fork *fork2)
+bool	drop_forks(t_philo_hand *hand1, t_philo_hand *hand2)
 {
-	if (fork1)
+	if (hand1)
 	{
-		pthread_mutex_unlock(&fork1->mutex);
-		fork1->available = true;
+		pthread_mutex_unlock(hand1->fork);
+		hand1->gripping = false;
 	}
-	if (fork2)
+	if (hand2)
 	{
-		pthread_mutex_unlock(&fork2->mutex);
-		fork2->available = true;
+		pthread_mutex_unlock(hand2->fork);
+		hand2->gripping = false;
 	}
 	return (false);
 }
 
-bool	starved_to_death(t_feast *feast, t_philo *philo)
-{
-	if (ms_since(philo->last_satiated) > feast->time_to_die)
-	{
-		if (feast->status == CRAVINGS)
-			philo->dead = true;
-		feast->status = CANCELLED;
-		philo_log(philo, "died");
-		return (true);
-	}
-	return (false);
-}
-
-bool	usleep_until_death(t_feast *feast, t_philo *philo,
-	long ms_duration, bool eating)
+bool	usleep_until_cancelled(t_feast *feast, long ms_duration)
 {
 	struct timeval	start;
 
 	gettimeofday(&start, NULL);
 	while (ms_since(start) < ms_duration)
 	{
-		if (feast->status == CANCELLED)
-			return (true);
-		if (!eating && starved_to_death(feast, philo))
+		if (is_cancelled(feast))
 			return (true);
 		usleep(1000);
 	}
-	return (feast->status == CANCELLED);
+	return (is_cancelled(feast));
 }

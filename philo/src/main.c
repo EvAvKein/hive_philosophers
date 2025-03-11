@@ -6,40 +6,11 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 09:15:43 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/06 11:23:38 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/11 11:11:13 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-static int	ft_atoi_positive_strict(char *str)
-{
-	size_t	i;
-	int		num;
-
-	if (!str)
-		return (-1);
-	if (str[0] == '-')
-	{
-		if (str[1] == '0' && !str[2])
-			return (0);
-		else
-			return (-1);
-	}
-	i = 0;
-	num = 0;
-	if ((!(*str >= '0' && *str <= '9') && !((str[0] == '+') && ++i)) || !str[i])
-		return (-1);
-	while (str[i] >= '0' && str[i] <= '9')
-	{
-		num = (num * 10) + (str[i++] - '0');
-		if (num < 0)
-			return (-1);
-	}
-	if (str[i])
-		return (-1);
-	return (num);
-}
 
 static bool	parse_philo_args(t_philo_args *data, int argc, char **argv)
 {
@@ -61,32 +32,45 @@ static bool	parse_philo_args(t_philo_args *data, int argc, char **argv)
 	return (1);
 }
 
+static bool	init_locks(t_feast *feast)
+{
+	if (pthread_mutex_init(&feast->status_check, NULL))
+	{
+		write(STDERR_FILENO, "Feast off: Can't create status check :(\n", 41);
+		return (false);
+	}
+	if (pthread_mutex_init(&feast->stenographer, NULL))
+	{
+		write(STDERR_FILENO, "Feast off: Can't bring stenographer :(\n", 40);
+		pthread_mutex_destroy(&feast->status_check);
+		return (false);
+	}
+	return (true);
+}
+
 static bool	prepare_feast(t_feast *feast, t_philo_args data)
 {
 	*feast = (t_feast){
 		.status = COOKING, .philos = NULL, .num_of_philos = data.num_of_philos,
-		.forks = malloc(sizeof(t_fork) * (data.num_of_philos + 1)),
-		.threads = malloc(sizeof(pthread_t) * (data.num_of_philos + 1)),
-		.time_to_die = data.time_to_die,
-		.time_to_eat = data.time_to_eat,
-		.time_to_sleep = data.time_to_sleep,
-		.must_eat = data.must_eat
+		.forks = NULL, .philo_threads = NULL,
+		.time_to_die = data.time_to_die, .time_to_eat = data.time_to_eat,
+		.time_to_sleep = data.time_to_sleep, .must_eat = data.must_eat,
 	};
-	if (!feast->forks || !feast->threads)
+	if (!init_locks(feast))
+		return (false);
+	feast->forks = malloc(sizeof(pthread_mutex_t) * (data.num_of_philos + 1));
+	feast->philo_threads = malloc(sizeof(pthread_t) * (data.num_of_philos + 1));
+	if (!feast->forks || !feast->philo_threads)
 	{
 		if (feast->forks)
 			free(feast->forks);
-		if (feast->threads)
-			free(feast->threads);
+		if (feast->philo_threads)
+			free(feast->philo_threads);
 		write(STDERR_FILENO, "Feast off: A feast malloc failed :(\n", 37);
 		return (false);
 	}
-	pthread_mutex_init(&feast->stenographer, NULL);
-	memset(feast->threads, '\0',
-		sizeof(pthread_t) * (data.num_of_philos + 1));
-	memset(feast->forks, '\0',
-		sizeof(t_fork) * (data.num_of_philos + 1));
-	feast->num_of_philos = data.num_of_philos;
+	memset(feast->philo_threads, '\0', sizeof(pthread_t) * data.num_of_philos);
+	memset(feast->forks, '\0', sizeof(pthread_mutex_t) * data.num_of_philos);
 	return (true);
 }
 
@@ -98,9 +82,10 @@ static int	philosophers(t_philo_args data)
 		return (EXIT_FAILURE);
 	if (!launch_feast(&feast, data))
 		return (EXIT_FAILURE);
-	wait_for_philos(&feast);
-	free(feast.threads);
-	feast.threads = NULL;
+	wait_for_everyone(&feast);
+	free(feast.philo_threads);
+	feast.philo_threads = NULL;
+	feast.grim_reaper_thread = 0;
 	end_feast(&feast, NULL);
 	return (EXIT_SUCCESS);
 }

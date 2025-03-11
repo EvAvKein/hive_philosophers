@@ -1,31 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   time.c                                             :+:      :+:    :+:   */
+/*   status.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/05 19:37:46 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/06 20:30:02 by ekeinan          ###   ########.fr       */
+/*   Created: 2025/03/09 15:27:03 by ekeinan           #+#    #+#             */
+/*   Updated: 2025/03/09 16:09:04 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-long	ms_of(struct timeval timestamp)
+bool	is_cancelled(t_feast *feast)
 {
-	return (((timestamp.tv_sec * 1000) + (timestamp.tv_usec / 1000)));
+	bool	cancelled;
+
+	pthread_mutex_lock(&feast->status_check);
+	cancelled = feast->status == CANCELLED;
+	pthread_mutex_unlock(&feast->status_check);
+	return (cancelled);
 }
 
-long	ms_now(void)
+void	set_status(t_feast *feast, t_status	status)
 {
-	struct timeval		current;
-
-	gettimeofday(&current, NULL);
-	return (ms_of(current));
-}
-
-long	ms_since(struct timeval time)
-{
-	return (ms_now() - ms_of(time));
+	pthread_mutex_lock(&feast->status_check);
+	feast->status = status;
+	pthread_mutex_unlock(&feast->status_check);
 }

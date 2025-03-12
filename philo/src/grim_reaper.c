@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 15:12:42 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/11 11:12:42 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/12 16:33:15 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ static int	grim_loop(t_feast *feast, t_philo *philo, int satiated)
 		pthread_mutex_lock(&feast->status_check);
 		if (feast->status == CANCELLED)
 			return (pthread_mutex_unlock(&feast->status_check));
-		if (philo->ate == feast->must_eat)
+		if (feast->must_eat >= 0 && philo->ate == feast->must_eat)
 			satiated++;
 		else
 			satiated = 0;
@@ -44,9 +44,8 @@ static int	grim_loop(t_feast *feast, t_philo *philo, int satiated)
 			feast->status = CANCELLED;
 			return (pthread_mutex_unlock(&feast->status_check));
 		}
-		if (philo->ate < feast->must_eat
-			&& (ms_since(feast->serve_time) - philo->last_satiated)
-			> feast->time_to_die)
+		if ((ms_since(feast->serve_time) - philo->last_satiated)
+			>= feast->time_to_die)
 		{
 			reap(feast, philo);
 			return (pthread_mutex_unlock(&feast->status_check));

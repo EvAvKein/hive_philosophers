@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 13:05:38 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/11 11:12:52 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/12 16:01:40 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,8 +98,8 @@ void	*philo_routine(void *arg)
 		pthread_mutex_unlock(&feast->status_check);
 		return (NULL);
 	}
-	pthread_mutex_unlock(&feast->status_check);
 	philo_log(philo, "is thinking", false);
+	pthread_mutex_unlock(&feast->status_check);
 	if (philo->id % 2)
 	{
 		if (usleep_until_cancelled(feast, feast->time_to_eat))

@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 09:15:43 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/11 11:11:13 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/13 14:48:39 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,18 +18,18 @@ static bool	parse_philo_args(t_philo_args *data, int argc, char **argv)
 	data->time_to_die = ft_atoi_positive_strict(argv[2]);
 	data->time_to_eat = ft_atoi_positive_strict(argv[3]);
 	data->time_to_sleep = ft_atoi_positive_strict(argv[4]);
-	if (data->num_of_philos < 0 || data->time_to_die < 0
-		|| data->time_to_eat < 0 || data->time_to_sleep < 0)
-		return (0);
+	if (data->num_of_philos < 0 || data->time_to_die < 1
+		|| data->time_to_eat < 1 || data->time_to_sleep < 1)
+		return (false);
 	if (argc == 6)
 	{
 		data->must_eat = ft_atoi_positive_strict(argv[5]);
-		if (data->must_eat < 0)
-			return (0);
+		if (data->must_eat < 1)
+			return (false);
 	}
 	else
 		data->must_eat = -1;
-	return (1);
+	return (true);
 }
 
 static bool	init_locks(t_feast *feast)

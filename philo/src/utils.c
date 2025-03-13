@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 13:47:39 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/11 11:12:07 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/13 14:41:08 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,13 +19,6 @@ int	ft_atoi_positive_strict(char *str)
 
 	if (!str)
 		return (-1);
-	if (str[0] == '-')
-	{
-		if (str[1] == '0' && !str[2])
-			return (0);
-		else
-			return (-1);
-	}
 	i = 0;
 	num = 0;
 	if ((!(*str >= '0' && *str <= '9') && !((str[0] == '+') && ++i)) || !str[i])

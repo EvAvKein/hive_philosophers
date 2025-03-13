@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 09:15:43 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/13 21:37:35 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/13 21:44:45 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ static bool	prepare_feast(t_feast *feast, t_philo_args data)
 			free(feast->forks);
 		if (feast->philo_threads)
 			free(feast->philo_threads);
-		write(STDERR_FILENO, "Feast off: A feast malloc failed :(\n", 37);
+		write(STDERR_FILENO, "Feast off: Not enough space for feast :(\n", 42);
 		return (false);
 	}
 	memset(feast->philo_threads, '\0', sizeof(pthread_t) * data.num_of_philos);

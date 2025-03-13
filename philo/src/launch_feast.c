@@ -19,7 +19,7 @@ static t_philo	*welcome_philo(t_feast *feast, t_philo_args args, int id)
 	philo = malloc(sizeof(t_philo));
 	if (!philo)
 	{
-		end_feast(feast, "Feast off: Philo malloc failed :(\n");
+		end_feast(feast, "Feast off: Not enough space for philosopher :(\n");
 		return (NULL);
 	}
 	*philo = (t_philo){

@@ -6,7 +6,7 @@
 #    By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/02/26 19:12:41 by ekeinan           #+#    #+#              #
-#    Updated: 2025/03/11 10:36:19 by ekeinan          ###   ########.fr        #
+#    Updated: 2025/03/13 21:38:11 by ekeinan          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,6 @@ SRC_FILES := main.c \
 			 philo.c \
 			 grim_reaper.c \
 			 time.c \
-			 status.c \
 			 utils.c \
 			 cleanup.c
 

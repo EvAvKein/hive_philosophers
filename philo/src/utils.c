@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 13:47:39 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/13 14:43:16 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/13 20:34:52 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,9 +72,9 @@ bool	usleep_until_cancelled(t_feast *feast, long ms_duration)
 	gettimeofday(&start, NULL);
 	while (ms_since(start) < ms_duration)
 	{
-		if (is_cancelled(feast))
+		if (feast->status == CANCELLED)
 			return (true);
 		usleep(1000);
 	}
-	return (is_cancelled(feast));
+	return (feast->status == CANCELLED);
 }

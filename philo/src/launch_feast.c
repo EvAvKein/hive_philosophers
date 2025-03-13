@@ -63,7 +63,7 @@ static bool	welcome_philos(t_feast *feast, t_philo_args data)
 	return (true);
 }
 
-static bool	thread_everyone(t_feast *feast)
+static bool	greet_everyone(t_feast *feast)
 {
 	pthread_t	thread;
 	t_philo		*philo;
@@ -71,20 +71,18 @@ static bool	thread_everyone(t_feast *feast)
 
 	if (pthread_create(&thread, NULL, grim_reaper_routine, feast))
 	{
-		pthread_mutex_unlock(&feast->status_check);
-		return (end_feast(feast,
-				"Feast off: Grim Reaper threading failed :(\n"));
+		pthread_mutex_unlock(&feast->greeter);
+		return (end_feast(feast, "Feast off: Couldn't greet the reaper :(\n"));
 	}
-	feast->grim_reaper_thread = thread;
+	feast->grim_reaper = thread;
 	philo = feast->philos;
 	i = 0;
 	while (i < feast->num_of_philos)
 	{
 		if (pthread_create(&thread, NULL, philo_routine, philo))
 		{
-			pthread_mutex_unlock(&feast->status_check);
-			return (end_feast(feast,
-					"Feast off: Philo threading failed :(\n"));
+			pthread_mutex_unlock(&feast->greeter);
+			return (end_feast(feast, "Feast off: Couldn't greet a philo :(\n"));
 		}
 		feast->philo_threads[i++] = thread;
 		philo = philo->next;
@@ -116,11 +114,11 @@ bool	launch_feast(t_feast *feast, t_philo_args data)
 		return (false);
 	if (!welcome_philos(feast, data))
 		return (false);
-	pthread_mutex_lock(&feast->status_check);
-	if (!thread_everyone(feast))
+	pthread_mutex_lock(&feast->greeter);
+	if (!greet_everyone(feast))
 		return (false);
 	gettimeofday(&feast->serve_time, NULL);
 	feast->status = CRAVINGS;
-	pthread_mutex_unlock(&feast->status_check);
+	pthread_mutex_unlock(&feast->greeter);
 	return (true);
 }

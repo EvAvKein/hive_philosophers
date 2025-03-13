@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 09:15:43 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/13 14:48:39 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/13 21:37:35 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,15 +34,15 @@ static bool	parse_philo_args(t_philo_args *data, int argc, char **argv)
 
 static bool	init_locks(t_feast *feast)
 {
-	if (pthread_mutex_init(&feast->status_check, NULL))
+	if (pthread_mutex_init(&feast->greeter, NULL))
 	{
-		write(STDERR_FILENO, "Feast off: Can't create status check :(\n", 41);
+		write(STDERR_FILENO, "Feast off: Can't bring greeter :(\n", 35);
 		return (false);
 	}
 	if (pthread_mutex_init(&feast->stenographer, NULL))
 	{
 		write(STDERR_FILENO, "Feast off: Can't bring stenographer :(\n", 40);
-		pthread_mutex_destroy(&feast->status_check);
+		pthread_mutex_destroy(&feast->greeter);
 		return (false);
 	}
 	return (true);
@@ -85,7 +85,7 @@ static int	philosophers(t_philo_args data)
 	wait_for_everyone(&feast);
 	free(feast.philo_threads);
 	feast.philo_threads = NULL;
-	feast.grim_reaper_thread = 0;
+	feast.grim_reaper = 0;
 	end_feast(&feast, NULL);
 	return (EXIT_SUCCESS);
 }

@@ -6,7 +6,7 @@
 #    By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/02/26 19:12:41 by ekeinan           #+#    #+#              #
-#    Updated: 2025/03/13 21:38:11 by ekeinan          ###   ########.fr        #
+#    Updated: 2025/03/14 12:44:29 by ekeinan          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,9 +22,10 @@ SRC_FILES := main.c \
 			 cleanup.c
 
 INCLUDE_DIR := include
-INCLUDE_FILES := philo.h
+INCLUDE_FILES := philo.h color.h
 
 COMPILE_FLAGS := -Wall -Wextra -Werror -I$(INCLUDE_DIR)
+DEBUG_FLAGS := -g
 
 OBJ := $(SRC_FILES:%.c=$(SRC_DIR)/%.o)
 HEADERS := $(INCLUDE_FILES:%=$(INCLUDE_DIR)/%)
@@ -32,7 +33,7 @@ HEADERS := $(INCLUDE_FILES:%=$(INCLUDE_DIR)/%)
 all: $(NAME)
 
 %.o: %.c
-	cc $(COMPILE_FLAGS) -c $< -o $@
+	cc $(COMPILE_FLAGS) -D COLOR=$(if $(COLOR),1,0) -c $< -o $@
 
 $(NAME): $(OBJ) $(HEADERS)
 	cc $(COMPILE_FLAGS) $(OBJ) -o $(NAME)
@@ -48,4 +49,10 @@ re: fclean all
 neat: $(NAME) clean
 	clear
 
-.PHONY: all bonus clean fclean re
+color: export COLOR = 1
+color: re
+
+debug: COMPILE_FLAGS += $(DEBUGFLAGS)
+debug: re
+
+.PHONY: all bonus clean fclean re color debug

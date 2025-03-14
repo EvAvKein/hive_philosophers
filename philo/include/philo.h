@@ -13,6 +13,7 @@
 #ifndef PHILO_H
 # define PHILO_H
 
+# include "color.h"
 # include <unistd.h>
 # include <stdio.h>
 # include <stdlib.h>
@@ -21,6 +22,24 @@
 # include <sys/time.h>
 # include <pthread.h>
 # include <stdatomic.h>
+
+# if COLOR
+#  define CLR_VERB  CLR_S CLR_FMT_STD  ";" CLR_TXT_WHT CLR_E
+#  define CLR_THINK CLR_S CLR_FMT_BOLD ";" CLR_TXT_PRP CLR_E
+#  define CLR_FORK  CLR_S CLR_FMT_DIM  ";" CLR_TXT_GRN CLR_E
+#  define CLR_EAT   CLR_S CLR_FMT_BOLD ";" CLR_TXT_GRN CLR_E
+#  define CLR_SLEEP CLR_S CLR_FMT_BOLD ";" CLR_TXT_CYN CLR_E
+#  define CLR_DIED  CLR_S CLR_FMT_BOLD ";" CLR_TXT_RED CLR_E
+#  define CLR_TIME  CLR_S CLR_FMT_BOLD ";" CLR_TXT_BLK CLR_E
+# else
+#  define CLR_VERB ""
+#  define CLR_THINK ""
+#  define CLR_FORK ""
+#  define CLR_EAT ""
+#  define CLR_SLEEP ""
+#  define CLR_DIED ""
+#  define CLR_TIME ""
+# endif
 
 typedef struct s_philo_args
 {

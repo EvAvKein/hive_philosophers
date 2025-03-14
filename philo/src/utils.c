@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 13:47:39 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/13 20:34:52 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/14 12:33:17 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void	*philo_log(t_philo *philo, char *action, bool death)
 		pthread_mutex_unlock(&philo->feast->stenographer);
 		return (NULL);
 	}
-	printf("%li %i %s\n",
+	printf(CLR_TIME "%li" CLR_RESET " %i %s\n",
 		ms_since(philo->feast->serve_time), philo->id, action);
 	pthread_mutex_unlock(&philo->feast->stenographer);
 	return (NULL);

@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 09:15:43 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/13 21:44:45 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/14 09:25:12 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,8 +58,8 @@ static bool	prepare_feast(t_feast *feast, t_philo_args data)
 	};
 	if (!init_locks(feast))
 		return (false);
-	feast->forks = malloc(sizeof(pthread_mutex_t) * (data.num_of_philos + 1));
-	feast->philo_threads = malloc(sizeof(pthread_t) * (data.num_of_philos + 1));
+	feast->forks = malloc(sizeof(pthread_mutex_t) * (data.num_of_philos));
+	feast->philo_threads = malloc(sizeof(pthread_t) * (data.num_of_philos));
 	if (!feast->forks || !feast->philo_threads)
 	{
 		if (feast->forks)

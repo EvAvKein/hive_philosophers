@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 09:15:43 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/14 09:25:12 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/15 15:57:48 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ static bool	parse_philo_args(t_philo_args *data, int argc, char **argv)
 	return (true);
 }
 
-static bool	init_locks(t_feast *feast)
+static bool	prepare_feast(t_feast *feast, t_philo_args data)
 {
 	if (pthread_mutex_init(&feast->greeter, NULL))
 	{
@@ -42,22 +42,8 @@ static bool	init_locks(t_feast *feast)
 	if (pthread_mutex_init(&feast->stenographer, NULL))
 	{
 		write(STDERR_FILENO, "Feast off: Can't bring stenographer :(\n", 40);
-		pthread_mutex_destroy(&feast->greeter);
-		return (false);
+		return (pthread_mutex_destroy(&feast->greeter) && false);
 	}
-	return (true);
-}
-
-static bool	prepare_feast(t_feast *feast, t_philo_args data)
-{
-	*feast = (t_feast){
-		.status = COOKING, .philos = NULL, .num_of_philos = data.num_of_philos,
-		.forks = NULL, .philo_threads = NULL,
-		.time_to_die = data.time_to_die, .time_to_eat = data.time_to_eat,
-		.time_to_sleep = data.time_to_sleep, .must_eat = data.must_eat,
-	};
-	if (!init_locks(feast))
-		return (false);
 	feast->forks = malloc(sizeof(pthread_mutex_t) * (data.num_of_philos));
 	feast->philo_threads = malloc(sizeof(pthread_t) * (data.num_of_philos));
 	if (!feast->forks || !feast->philo_threads)
@@ -78,6 +64,12 @@ static int	philosophers(t_philo_args data)
 {
 	t_feast	feast;
 
+	feast = (t_feast){
+		.status = COOKING, .forks = NULL, .philo_threads = NULL,
+		.philos = NULL, .num_of_philos = data.num_of_philos,
+		.time_to_die = data.time_to_die, .time_to_eat = data.time_to_eat,
+		.time_to_sleep = data.time_to_sleep, .must_eat = data.must_eat
+	};
 	if (!prepare_feast(&feast, data))
 		return (EXIT_FAILURE);
 	if (!launch_feast(&feast, data))
@@ -96,11 +88,11 @@ int	main(int argc, char **argv)
 
 	if (argc < 5 || argc > 6)
 	{
-		write(STDERR_FILENO, "./philo program arguments:\n\
+		write(STDERR_FILENO, "\e[1mphilo program arguments:\e[0m\n\
  - number_of_philosophers\n - time_to_die\n\
  - time_to_eat\n - time_to_sleep\n\
- - number_of_times_each_philosopher_must_eat \033[37m(optional)\033[0m\n",
-			166);
+ - number_of_times_each_philosopher_must_eat \e[2;37m(optional)\e[0;37m\n",
+			177);
 		return (EXIT_FAILURE);
 	}
 	if (!parse_philo_args(&data, argc, argv))

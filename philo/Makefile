@@ -6,7 +6,7 @@
 #    By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/02/26 19:12:41 by ekeinan           #+#    #+#              #
-#    Updated: 2025/03/14 12:44:29 by ekeinan          ###   ########.fr        #
+#    Updated: 2025/03/15 16:06:00 by ekeinan          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,7 +22,7 @@ SRC_FILES := main.c \
 			 cleanup.c
 
 INCLUDE_DIR := include
-INCLUDE_FILES := philo.h color.h
+INCLUDE_FILES := philo.h
 
 COMPILE_FLAGS := -Wall -Wextra -Werror -I$(INCLUDE_DIR)
 DEBUG_FLAGS := -g

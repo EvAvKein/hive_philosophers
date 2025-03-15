@@ -6,7 +6,7 @@
 #    By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/02/26 19:12:41 by ekeinan           #+#    #+#              #
-#    Updated: 2025/03/15 16:06:00 by ekeinan          ###   ########.fr        #
+#    Updated: 2025/03/15 19:40:13 by ekeinan          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -52,7 +52,7 @@ neat: $(NAME) clean
 color: export COLOR = 1
 color: re
 
-debug: COMPILE_FLAGS += $(DEBUGFLAGS)
+debug: COMPILE_FLAGS += $(DEBUG_FLAGS)
 debug: re
 
 .PHONY: all bonus clean fclean re color debug

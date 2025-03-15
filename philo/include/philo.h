@@ -6,14 +6,13 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 09:18:19 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/13 18:51:19by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/15 16:01:42 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILO_H
 # define PHILO_H
 
-# include "color.h"
 # include <unistd.h>
 # include <stdio.h>
 # include <stdlib.h>
@@ -24,14 +23,17 @@
 # include <stdatomic.h>
 
 # if COLOR
-#  define CLR_VERB  CLR_S CLR_FMT_STD  ";" CLR_TXT_WHT CLR_E
-#  define CLR_THINK CLR_S CLR_FMT_BOLD ";" CLR_TXT_PRP CLR_E
-#  define CLR_FORK  CLR_S CLR_FMT_DIM  ";" CLR_TXT_GRN CLR_E
-#  define CLR_EAT   CLR_S CLR_FMT_BOLD ";" CLR_TXT_GRN CLR_E
-#  define CLR_SLEEP CLR_S CLR_FMT_BOLD ";" CLR_TXT_CYN CLR_E
-#  define CLR_DIED  CLR_S CLR_FMT_BOLD ";" CLR_TXT_RED CLR_E
-#  define CLR_TIME  CLR_S CLR_FMT_BOLD ";" CLR_TXT_BLK CLR_E
+#  define CLR_RESET "\e[0;37m"
+#  define CLR_VERB "\e[2;37m"
+#  define CLR_THINK "\e[1;35m"
+#  define CLR_FORK "\e[2;32m"
+#  define CLR_EAT "\e[1;32m"
+#  define CLR_SLEEP "\e[1;36m"
+#  define CLR_DIED "\e[1;31m"
+#  define CLR_TIME "\e[1;30m"
 # else
+#  define COLOR 0
+#  define CLR_RESET ""
 #  define CLR_VERB ""
 #  define CLR_THINK ""
 #  define CLR_FORK ""

@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 14:12:53 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/16 14:34:23 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/16 14:49:39 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ bool	end_feast(t_feast *feast, char *announcement)
 		free(feast->forks);
 		feast->forks = NULL;
 	}
-	dismiss_staff(feast);
 	free_all_philos(feast->philos);
+	dismiss_staff(feast);
 	return (false);
 }

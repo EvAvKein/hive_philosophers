@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 14:12:53 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/13 21:37:35 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/16 14:34:23 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,10 +44,11 @@ static void	free_all_philos(t_philo *philos)
 	}
 }
 
-static void	destroy_all_locks(t_feast *feast)
+static void	dismiss_staff(t_feast *feast)
 {
 	pthread_mutex_destroy(&feast->greeter);
 	pthread_mutex_destroy(&feast->stenographer);
+	pthread_mutex_destroy(&feast->fork_coordinator);
 }
 
 static void	destroy_all_forks(t_feast *feast)
@@ -85,7 +86,7 @@ bool	end_feast(t_feast *feast, char *announcement)
 		free(feast->forks);
 		feast->forks = NULL;
 	}
-	destroy_all_locks(feast);
+	dismiss_staff(feast);
 	free_all_philos(feast->philos);
 	return (false);
 }

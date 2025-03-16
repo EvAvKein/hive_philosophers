@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 09:15:43 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/15 15:57:48 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/16 14:36:06 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,18 +32,34 @@ static bool	parse_philo_args(t_philo_args *data, int argc, char **argv)
 	return (true);
 }
 
-static bool	prepare_feast(t_feast *feast, t_philo_args data)
+static bool	recruit_staff(t_feast *feast)
 {
 	if (pthread_mutex_init(&feast->greeter, NULL))
 	{
-		write(STDERR_FILENO, "Feast off: Can't bring greeter :(\n", 35);
+		write(STDERR_FILENO, "Feast off: Can't recruit greeter :(\n", 37);
 		return (false);
 	}
 	if (pthread_mutex_init(&feast->stenographer, NULL))
 	{
-		write(STDERR_FILENO, "Feast off: Can't bring stenographer :(\n", 40);
-		return (pthread_mutex_destroy(&feast->greeter) && false);
+		write(STDERR_FILENO, "Feast off: Can't recruit stenographer :(\n", 42);
+		pthread_mutex_destroy(&feast->greeter);
+		return (false);
 	}
+	if (pthread_mutex_init(&feast->fork_coordinator, NULL))
+	{
+		write(STDERR_FILENO, 
+			"Feast off: Can't recruit fork coordinator :(\n", 46);
+		pthread_mutex_destroy(&feast->greeter);
+		pthread_mutex_destroy(&feast->stenographer);
+		return (false);
+	}
+	return (true);
+}
+
+static bool	prepare_feast(t_feast *feast, t_philo_args data)
+{
+	if (!recruit_staff(feast))
+		return (false);
 	feast->forks = malloc(sizeof(pthread_mutex_t) * (data.num_of_philos));
 	feast->philo_threads = malloc(sizeof(pthread_t) * (data.num_of_philos));
 	if (!feast->forks || !feast->philo_threads)

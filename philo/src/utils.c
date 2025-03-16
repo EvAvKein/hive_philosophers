@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 13:47:39 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/14 12:33:17 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/16 14:30:37 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,9 @@ void	*philo_log(t_philo *philo, char *action, bool death)
 	return (NULL);
 }
 
-bool	drop_forks(t_philo_hand *hand1, t_philo_hand *hand2)
+bool	drop_forks(t_feast *feast, t_philo_hand *hand1, t_philo_hand *hand2)
 {
+	pthread_mutex_lock(&feast->fork_coordinator);
 	if (hand1)
 	{
 		pthread_mutex_unlock(hand1->fork);
@@ -62,6 +63,7 @@ bool	drop_forks(t_philo_hand *hand1, t_philo_hand *hand2)
 		pthread_mutex_unlock(hand2->fork);
 		hand2->gripping = false;
 	}
+	pthread_mutex_unlock(&feast->fork_coordinator);
 	return (false);
 }
 

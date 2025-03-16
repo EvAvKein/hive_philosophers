@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 13:05:38 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/15 16:12:49 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/16 14:37:06 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,15 @@ static bool	pickup_fork_until_cancelled(
 	t_feast *feast, t_philo *philo, t_philo_hand *hand)
 {
 	pthread_mutex_lock(hand->fork);
+	pthread_mutex_lock(&feast->fork_coordinator);
 	hand->gripping = true;
+	pthread_mutex_unlock(&feast->fork_coordinator);
 	if (feast->status == CANCELLED)
 	{
+		pthread_mutex_lock(&feast->fork_coordinator);
 		pthread_mutex_unlock(hand->fork);
 		hand->gripping = false;
+		pthread_mutex_unlock(&feast->fork_coordinator);
 		return (true);
 	}
 	philo_log(philo,
@@ -42,13 +46,13 @@ static bool	eat(t_feast *feast, t_philo *philo,
 	if (pickup_fork_until_cancelled(feast, philo, hand1))
 		return (NULL);
 	if (pickup_fork_until_cancelled(feast, philo, hand2))
-		return (drop_forks(hand1, NULL));
+		return (drop_forks(feast, hand1, NULL));
 	philo->last_satiated = ms_since(feast->serve_time);
 	philo_log(philo,
 		CLR_VERB "is" CLR_RESET CLR_EAT " eating" CLR_RESET, false);
 	if (usleep_until_cancelled(feast, feast->time_to_eat))
-		return (drop_forks(hand1, hand2));
-	drop_forks(hand1, hand2);
+		return (drop_forks(feast, hand1, hand2));
+	drop_forks(feast, hand1, hand2);
 	philo->ate++;
 	return (true);
 }

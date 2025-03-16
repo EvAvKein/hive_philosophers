@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 15:12:42 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/14 12:28:55 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/16 14:30:37 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ static void	reap(t_feast *feast, t_philo *philo)
 {
 	feast->status = CANCELLED;
 	philo_log(philo, CLR_DIED "died" CLR_RESET, true);
+	pthread_mutex_lock(&feast->fork_coordinator);
 	if (philo->hands[0].gripping)
 	{
 		pthread_mutex_unlock(philo->hands[0].fork);
@@ -26,6 +27,7 @@ static void	reap(t_feast *feast, t_philo *philo)
 		pthread_mutex_unlock(philo->hands[1].fork);
 		philo->hands[1].gripping = false;
 	}
+	pthread_mutex_unlock(&feast->fork_coordinator);
 }
 
 static void	grim_loop(t_feast *feast, t_philo *philo, int satiated)

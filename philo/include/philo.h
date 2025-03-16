@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 09:18:19 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/15 16:01:42 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/16 14:30:37 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ typedef struct s_feast
 	atomic_int		status;
 	pthread_mutex_t	greeter;
 	pthread_mutex_t	stenographer;
+	pthread_mutex_t	fork_coordinator;
 	pthread_mutex_t	*forks;
 	pthread_t		grim_reaper;
 	pthread_t		*philo_threads;
@@ -104,7 +105,7 @@ long	ms_since(struct timeval time);
 
 int		ft_atoi_positive_strict(char *str);
 void	*philo_log(t_philo *philo, char *action, bool death);
-bool	drop_forks(t_philo_hand *hand1, t_philo_hand *hand2);
+bool	drop_forks(t_feast *feast, t_philo_hand *hand1, t_philo_hand *hand2);
 bool	usleep_until_cancelled(t_feast *feast, long ms_duration);
 
 #endif

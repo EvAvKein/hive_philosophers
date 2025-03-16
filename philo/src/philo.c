@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 13:05:38 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/16 16:08:34 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/16 16:09:35 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ static void	philoop(t_feast *feast, t_philo *philo)
 			CLR_VERB "is" CLR_RESET CLR_SLEEP " sleeping" CLR_RESET, false);
 		if (usleep_until_cancelled(feast, feast->time_to_sleep))
 			return ;
-		if (feast->status == CANCELLED || philo->ate == feast->must_eat)
+		if (feast->status == CANCELLED)
 			return ;
 		philo_log(philo,
 			CLR_VERB "is" CLR_RESET CLR_THINK " thinking" CLR_RESET, false);

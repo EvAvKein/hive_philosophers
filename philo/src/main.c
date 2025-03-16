@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 09:15:43 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/16 14:36:06 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/16 16:11:09 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ static bool	recruit_staff(t_feast *feast)
 	}
 	if (pthread_mutex_init(&feast->fork_coordinator, NULL))
 	{
-		write(STDERR_FILENO, 
+		write(STDERR_FILENO,
 			"Feast off: Can't recruit fork coordinator :(\n", 46);
 		pthread_mutex_destroy(&feast->greeter);
 		pthread_mutex_destroy(&feast->stenographer);

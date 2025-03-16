@@ -12,6 +12,24 @@
 
 #include "philo.h"
 
+static bool	place_forks(t_feast *feast)
+{
+	int	i;
+
+	i = 0;
+	while (i < feast->num_of_philos)
+	{
+		if (pthread_mutex_init(&feast->forks[i], NULL))
+		{
+			while (i)
+				pthread_mutex_destroy(&feast->forks[--i]);
+			return (false);
+		}
+		i++;
+	}
+	return (true);
+}
+
 static t_philo	*welcome_philo(t_feast *feast, t_philo_args args, int id)
 {
 	t_philo	*philo;
@@ -86,24 +104,6 @@ static bool	greet_everyone(t_feast *feast)
 		}
 		feast->philo_threads[i++] = thread;
 		philo = philo->next;
-	}
-	return (true);
-}
-
-static bool	place_forks(t_feast *feast)
-{
-	int	i;
-
-	i = 0;
-	while (i < feast->num_of_philos)
-	{
-		if (pthread_mutex_init(&feast->forks[i], NULL))
-		{
-			while (i)
-				pthread_mutex_destroy(&feast->forks[--i]);
-			return (false);
-		}
-		i++;
 	}
 	return (true);
 }

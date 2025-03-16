@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 14:12:53 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/16 14:49:39 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/16 16:20:41 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,18 @@ void	wait_for_everyone(t_feast *feast)
 	}
 	if (feast->grim_reaper)
 		pthread_join(feast->grim_reaper, NULL);
+}
+
+static void	destroy_all_forks(t_feast *feast)
+{
+	int			i;
+
+	if (feast->forks)
+	{
+		i = 0;
+		while (i < feast->num_of_philos)
+			pthread_mutex_destroy(&feast->forks[i++]);
+	}
 }
 
 static void	free_all_philos(t_philo *philos)
@@ -49,18 +61,6 @@ static void	dismiss_staff(t_feast *feast)
 	pthread_mutex_destroy(&feast->greeter);
 	pthread_mutex_destroy(&feast->stenographer);
 	pthread_mutex_destroy(&feast->fork_coordinator);
-}
-
-static void	destroy_all_forks(t_feast *feast)
-{
-	int			i;
-
-	if (feast->forks)
-	{
-		i = 0;
-		while (i < feast->num_of_philos)
-			pthread_mutex_destroy(&feast->forks[i++]);
-	}
 }
 
 bool	end_feast(t_feast *feast, char *announcement)

@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 09:18:19 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/17 15:58:07 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/17 16:01:15 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,12 +68,12 @@ typedef struct s_philo_hand
 typedef struct s_philo
 {
 	struct s_feast	*feast;
-	struct s_philo	*next;
 	t_philo_hand	hands[2];
 	int				id;
 	atomic_long		last_satiated;
 	atomic_int		ate;
-}						t_philo;
+	struct s_philo	*next;
+}					t_philo;
 
 typedef struct s_staff
 {
@@ -83,22 +83,22 @@ typedef struct s_staff
 	bool			greeter_staffed;
 	bool			stenographer_staffed;
 	bool			fork_coordinator_staffed;
-}			t_staff;
+}					t_staff;
 
 typedef struct s_feast
 {
-	t_staff			staff;
-	atomic_int		status;
-	pthread_mutex_t	*forks;
-	pthread_t		grim_reaper;
-	pthread_t		*philo_threads;
-	t_philo			*philos;
-	struct timeval	serve_time;
 	int				num_of_philos;
 	int				time_to_die;
 	int				time_to_eat;
 	int				time_to_sleep;
 	int				must_eat;
+	t_staff			staff;
+	atomic_int		status;
+	pthread_mutex_t	*forks;
+	t_philo			*philos;
+	pthread_t		*philo_threads;
+	pthread_t		grim_reaper;
+	struct timeval	serve_time;
 }					t_feast;
 
 bool	launch_feast(t_feast *feast, t_philo_args data);

@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 15:12:42 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/16 14:30:37 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/17 15:49:12 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static void	reap(t_feast *feast, t_philo *philo)
 {
 	feast->status = CANCELLED;
 	philo_log(philo, CLR_DIED "died" CLR_RESET, true);
-	pthread_mutex_lock(&feast->fork_coordinator);
+	pthread_mutex_lock(&feast->staff.fork_coordinator);
 	if (philo->hands[0].gripping)
 	{
 		pthread_mutex_unlock(philo->hands[0].fork);
@@ -27,7 +27,7 @@ static void	reap(t_feast *feast, t_philo *philo)
 		pthread_mutex_unlock(philo->hands[1].fork);
 		philo->hands[1].gripping = false;
 	}
-	pthread_mutex_unlock(&feast->fork_coordinator);
+	pthread_mutex_unlock(&feast->staff.fork_coordinator);
 }
 
 static void	grim_loop(t_feast *feast, t_philo *philo, int satiated)
@@ -63,13 +63,13 @@ void	*grim_reaper_routine(void *arg)
 
 	feast = (t_feast *)arg;
 	philo = feast->philos;
-	pthread_mutex_lock(&feast->greeter);
+	pthread_mutex_lock(&feast->staff.greeter);
 	if (feast->status == CANCELLED)
 	{
-		pthread_mutex_unlock(&feast->greeter);
+		pthread_mutex_unlock(&feast->staff.greeter);
 		return (NULL);
 	}
-	pthread_mutex_unlock(&feast->greeter);
+	pthread_mutex_unlock(&feast->staff.greeter);
 	philo = feast->philos;
 	satiated = 0;
 	grim_loop(feast, philo, satiated);

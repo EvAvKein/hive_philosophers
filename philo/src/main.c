@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 09:15:43 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/16 16:11:09 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/17 15:48:04 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,25 +34,19 @@ static bool	parse_philo_args(t_philo_args *data, int argc, char **argv)
 
 static bool	recruit_staff(t_feast *feast)
 {
-	if (pthread_mutex_init(&feast->greeter, NULL))
-	{
-		write(STDERR_FILENO, "Feast off: Can't recruit greeter :(\n", 37);
-		return (false);
-	}
-	if (pthread_mutex_init(&feast->stenographer, NULL))
-	{
-		write(STDERR_FILENO, "Feast off: Can't recruit stenographer :(\n", 42);
-		pthread_mutex_destroy(&feast->greeter);
-		return (false);
-	}
-	if (pthread_mutex_init(&feast->fork_coordinator, NULL))
-	{
-		write(STDERR_FILENO,
-			"Feast off: Can't recruit fork coordinator :(\n", 46);
-		pthread_mutex_destroy(&feast->greeter);
-		pthread_mutex_destroy(&feast->stenographer);
-		return (false);
-	}
+	if (pthread_mutex_init(&feast->staff.greeter, NULL))
+		return (end_feast(feast, "Feast off: Can't recruit greeter :(\n"));
+	else
+		feast->staff.greeter_staffed = true;
+	if (pthread_mutex_init(&feast->staff.stenographer, NULL))
+		return (end_feast(feast, "Feast off: Can't recruit stenographer :(\n"));
+	else
+		feast->staff.stenographer_staffed = true;
+	if (pthread_mutex_init(&feast->staff.fork_coordinator, NULL))
+		return (end_feast(feast,
+			"Feast off: Can't recruit fork coordinator :(\n"));
+	else
+		feast->staff.fork_coordinator_staffed = true;
 	return (true);
 }
 
@@ -65,11 +59,16 @@ static bool	prepare_feast(t_feast *feast, t_philo_args data)
 	if (!feast->forks || !feast->philo_threads)
 	{
 		if (feast->forks)
+		{
 			free(feast->forks);
+			feast->forks = NULL;
+		}
 		if (feast->philo_threads)
+		{
 			free(feast->philo_threads);
-		write(STDERR_FILENO, "Feast off: Not enough space for feast :(\n", 42);
-		return (false);
+			feast->philo_threads = NULL;
+		}
+		return (end_feast(feast, "Feast off: Not enough space for feast :(\n"));
 	}
 	memset(feast->philo_threads, '\0', sizeof(pthread_t) * data.num_of_philos);
 	memset(feast->forks, '\0', sizeof(pthread_mutex_t) * data.num_of_philos);
@@ -84,7 +83,9 @@ static int	philosophers(t_philo_args data)
 		.status = COOKING, .forks = NULL, .philo_threads = NULL,
 		.philos = NULL, .num_of_philos = data.num_of_philos,
 		.time_to_die = data.time_to_die, .time_to_eat = data.time_to_eat,
-		.time_to_sleep = data.time_to_sleep, .must_eat = data.must_eat
+		.time_to_sleep = data.time_to_sleep, .must_eat = data.must_eat,
+		.staff = (t_staff){.greeter_staffed = false,
+			.stenographer_staffed = false, .fork_coordinator_staffed = false},
 	};
 	if (!prepare_feast(&feast, data))
 		return (EXIT_FAILURE);

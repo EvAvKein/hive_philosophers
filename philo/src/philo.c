@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 13:05:38 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/16 16:09:35 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/17 15:48:36 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,16 +16,16 @@ static bool	pickup_fork_until_cancelled(
 	t_feast *feast, t_philo *philo, t_philo_hand *hand)
 {
 	pthread_mutex_lock(hand->fork);
-	pthread_mutex_lock(&feast->fork_coordinator);
+	pthread_mutex_lock(&feast->staff.fork_coordinator);
 	hand->gripping = true;
 	if (feast->status == CANCELLED)
 	{
 		hand->gripping = false;
 		pthread_mutex_unlock(hand->fork);
-		pthread_mutex_unlock(&feast->fork_coordinator);
+		pthread_mutex_unlock(&feast->staff.fork_coordinator);
 		return (true);
 	}
-	pthread_mutex_unlock(&feast->fork_coordinator);
+	pthread_mutex_unlock(&feast->staff.fork_coordinator);
 	philo_log(philo,
 		CLR_VERB "has" CLR_RESET CLR_FORK " taken a fork" CLR_RESET, false);
 	return (false);
@@ -89,13 +89,13 @@ void	*philo_routine(void *arg)
 
 	philo = (t_philo *)arg;
 	feast = philo->feast;
-	pthread_mutex_lock(&feast->greeter);
+	pthread_mutex_lock(&feast->staff.greeter);
 	if (feast->status == CANCELLED)
 	{
-		pthread_mutex_unlock(&feast->greeter);
+		pthread_mutex_unlock(&feast->staff.greeter);
 		return (NULL);
 	}
-	pthread_mutex_unlock(&feast->greeter);
+	pthread_mutex_unlock(&feast->staff.greeter);
 	philo_log(philo,
 		CLR_VERB "is" CLR_RESET CLR_THINK " thinking" CLR_RESET, false);
 	if (philo->id % 2)

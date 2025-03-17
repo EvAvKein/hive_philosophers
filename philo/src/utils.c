@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 13:47:39 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/16 16:22:49 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/17 15:48:52 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,15 +38,15 @@ int	ft_atoi_positive_strict(char *str)
 
 void	*philo_log(t_philo *philo, char *action, bool death)
 {
-	pthread_mutex_lock(&philo->feast->stenographer);
+	pthread_mutex_lock(&philo->feast->staff.stenographer);
 	if (!death && philo->feast->status == CANCELLED)
 	{
-		pthread_mutex_unlock(&philo->feast->stenographer);
+		pthread_mutex_unlock(&philo->feast->staff.stenographer);
 		return (NULL);
 	}
 	printf(CLR_TIME "%li" CLR_RESET " %i %s\n",
 		ms_since(philo->feast->serve_time), philo->id, action);
-	pthread_mutex_unlock(&philo->feast->stenographer);
+	pthread_mutex_unlock(&philo->feast->staff.stenographer);
 	return (NULL);
 }
 
@@ -66,7 +66,7 @@ bool	usleep_until_cancelled(t_feast *feast, long ms_duration)
 
 bool	drop_forks(t_feast *feast, t_philo_hand *hand1, t_philo_hand *hand2)
 {
-	pthread_mutex_lock(&feast->fork_coordinator);
+	pthread_mutex_lock(&feast->staff.fork_coordinator);
 	if (hand1)
 	{
 		pthread_mutex_unlock(hand1->fork);
@@ -77,6 +77,6 @@ bool	drop_forks(t_feast *feast, t_philo_hand *hand1, t_philo_hand *hand2)
 		pthread_mutex_unlock(hand2->fork);
 		hand2->gripping = false;
 	}
-	pthread_mutex_unlock(&feast->fork_coordinator);
+	pthread_mutex_unlock(&feast->staff.fork_coordinator);
 	return (false);
 }

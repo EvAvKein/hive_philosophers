@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 09:15:43 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/17 15:48:04 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/17 15:55:47 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ static bool	recruit_staff(t_feast *feast)
 		feast->staff.stenographer_staffed = true;
 	if (pthread_mutex_init(&feast->staff.fork_coordinator, NULL))
 		return (end_feast(feast,
-			"Feast off: Can't recruit fork coordinator :(\n"));
+				"Feast off: Can't recruit fork coordinator :(\n"));
 	else
 		feast->staff.fork_coordinator_staffed = true;
 	return (true);
@@ -85,7 +85,7 @@ static int	philosophers(t_philo_args data)
 		.time_to_die = data.time_to_die, .time_to_eat = data.time_to_eat,
 		.time_to_sleep = data.time_to_sleep, .must_eat = data.must_eat,
 		.staff = (t_staff){.greeter_staffed = false,
-			.stenographer_staffed = false, .fork_coordinator_staffed = false},
+		.stenographer_staffed = false, .fork_coordinator_staffed = false},
 	};
 	if (!prepare_feast(&feast, data))
 		return (EXIT_FAILURE);

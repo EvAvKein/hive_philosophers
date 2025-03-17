@@ -23,7 +23,9 @@ static bool	place_forks(t_feast *feast)
 		{
 			while (i)
 				pthread_mutex_destroy(&feast->forks[--i]);
-			return (false);
+			free(feast->forks);
+			feast->forks = NULL;
+			return (end_feast(feast, "Feast off: Can't get enough forks :(\n"));
 		}
 		i++;
 	}
@@ -36,10 +38,7 @@ static t_philo	*welcome_philo(t_feast *feast, t_philo_args args, int id)
 
 	philo = malloc(sizeof(t_philo));
 	if (!philo)
-	{
-		end_feast(feast, "Feast off: Not enough space for philosopher :(\n");
 		return (NULL);
-	}
 	*philo = (t_philo){
 		.feast = feast,
 		.id = id, .next = NULL,
@@ -67,13 +66,13 @@ static bool	welcome_philos(t_feast *feast, t_philo_args data)
 	i = 0;
 	feast->philos = welcome_philo(feast, data, ++i);
 	if (!feast->philos)
-		return (false);
+		return (end_feast(feast, "Feast off: No space for even 1 philo :(\n"));
 	append_philo = feast->philos;
 	while (i < data.num_of_philos)
 	{
 		philo = welcome_philo(feast, data, ++i);
 		if (!philo)
-			return (false);
+			return (end_feast(feast, "Feast off: No space for philos :(\n"));
 		append_philo->next = philo;
 		append_philo = philo;
 	}

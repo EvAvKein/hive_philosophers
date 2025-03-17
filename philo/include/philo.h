@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 09:18:19 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/17 15:50:33 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/17 15:58:07 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ typedef struct s_philo_hand
 
 typedef struct s_philo
 {
-	t_feast			*feast;
+	struct s_feast	*feast;
 	struct s_philo	*next;
 	t_philo_hand	hands[2];
 	int				id;

@@ -6,7 +6,7 @@
 /*   By: ekeinan <ekeinan@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 09:18:19 by ekeinan           #+#    #+#             */
-/*   Updated: 2025/03/17 16:01:15 by ekeinan          ###   ########.fr       */
+/*   Updated: 2025/03/18 10:29:04 by ekeinan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,23 +24,23 @@
 
 # if COLOR
 #  define CLR_RESET "\e[0;37m"
-#  define CLR_VERB "\e[2;37m"
+#  define CLR_VERB 	"\e[2;37m"
 #  define CLR_THINK "\e[1;35m"
-#  define CLR_FORK "\e[2;32m"
-#  define CLR_EAT "\e[1;32m"
+#  define CLR_FORK 	"\e[2;32m"
+#  define CLR_EAT 	"\e[1;32m"
 #  define CLR_SLEEP "\e[1;36m"
-#  define CLR_DIED "\e[1;31m"
-#  define CLR_TIME "\e[1;30m"
+#  define CLR_DIED 	"\e[1;31m"
+#  define CLR_TIME 	"\e[1;30m"
 # else
 #  define COLOR 0
 #  define CLR_RESET ""
-#  define CLR_VERB ""
+#  define CLR_VERB 	""
 #  define CLR_THINK ""
-#  define CLR_FORK ""
-#  define CLR_EAT ""
+#  define CLR_FORK	""
+#  define CLR_EAT	""
 #  define CLR_SLEEP ""
-#  define CLR_DIED ""
-#  define CLR_TIME ""
+#  define CLR_DIED	""
+#  define CLR_TIME	""
 # endif
 
 typedef struct s_philo_args

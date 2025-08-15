@@ -24,6 +24,7 @@ SRC_FILES := main.c \
 INCLUDE_DIR := include
 INCLUDE_FILES := philo.h
 
+CC := clang
 COMPILE_FLAGS := -Wall -Wextra -Werror -I$(INCLUDE_DIR)
 DEBUG_FLAGS := -g
 
@@ -33,10 +34,10 @@ HEADERS := $(INCLUDE_FILES:%=$(INCLUDE_DIR)/%)
 all: $(NAME)
 
 %.o: %.c
-	cc $(COMPILE_FLAGS) -D COLOR=$(if $(COLOR),1,0) -c $< -o $@
+	$(CC) $(COMPILE_FLAGS) -D COLOR=$(if $(COLOR),1,0) -c $< -o $@
 
 $(NAME): $(OBJ) $(HEADERS)
-	cc $(COMPILE_FLAGS) $(OBJ) -o $(NAME)
+	$(CC) $(COMPILE_FLAGS) $(OBJ) -o $(NAME)
 
 clean:
 	@rm -f $(OBJ) $(OBJ)

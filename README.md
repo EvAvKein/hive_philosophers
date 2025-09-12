@@ -4,6 +4,8 @@ My 8th project at 42 Network's Hive Helsinki 🐝
 
 Simulating the Dining Philosophers problem with multi-threading and mutexes!
 
+https://github.com/user-attachments/assets/e32090e2-03e6-4974-98fd-4b45c0d79b03
+
 > [!TIP]
 > If you're at a 42 school and doing this project: It's genuinely so much better to ask fellow students instead of reading online solutions ✨
 
